@@ -24,13 +24,13 @@ public class Helper {
         int heroDamage = hero.characterAttack - enemy.defense;
 
         enemy.curHp -= heroDamage;
-        System.out.printf("\n%s[%s/%s] hits %s[%s/%s] by %s damage.", hero.characterName, hero.characterCurHp, hero.characterHp, enemy.name, enemy.curHp, enemy.maxHp, heroDamage);
         if (enemy.curHp <= 0) {
             enemy.curHp = 0;
             hero.monsterCounter++;
             hero.characterCurExp += enemy.exp; //lvl up not released
             hero.inventory.add(generateItem());
-            System.out.printf("\nWinner: %s.\nEarned: %s exp, %s.", hero.characterName, enemy.exp,hero.inventory.get(hero.inventory.size() - 1).name);
+            System.out.printf("\n%s[%s/%s] hits %s[%s/%s] by %s damage.", hero.characterName, hero.characterCurHp, hero.characterHp, enemy.name, enemy.curHp, enemy.maxHp, heroDamage); //hit info
+            System.out.printf("\nWinner: %s.\nEarned: %s exp, %s.", hero.characterName, enemy.exp,hero.inventory.get(hero.inventory.size() - 1).name); //win info
             return true;
         }
         return false;
@@ -40,10 +40,10 @@ public class Helper {
         int damage = enemy.attack - hero.characterDefense;
 
         hero.characterCurHp -= damage;
-        System.out.printf("\n%s[%s/%s] hits %s[%s/%s] by %s damage.", enemy.name, enemy.curHp, enemy.maxHp, hero.characterName, hero.characterCurHp, hero.characterHp, damage);
         if (hero.characterCurHp <= 0) {
             hero.characterCurHp = 0;
-            System.out.printf("\nWinner: %s.", enemy.name);
+            System.out.printf("\n%s[%s/%s] hits %s[%s/%s] by %s damage.", enemy.name, enemy.curHp, enemy.maxHp, hero.characterName, hero.characterCurHp, hero.characterHp, damage); //hit info
+            System.out.printf("\nWinner: %s.", enemy.name); //win info
             return true;
         }
         return false;

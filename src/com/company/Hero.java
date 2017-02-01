@@ -62,11 +62,12 @@ public class Hero {
         System.out.printf("Battle between %s[%s] and %s has been stated.", _hero.characterName, _hero.characterLevel, _enemy.name);
         int round = 1;
         while (true) {
-            Helper.threadSleep(1000);
+            Helper.threadSleep(500);
             System.out.printf("\n\nRound %s.\n", round);
             if (Helper.hit(_hero, _enemy) || Helper.hit(_enemy, _hero)) break;
             round++;
         }
+        Helper.threadSleep(1500);
     }
 
     public void getInventory() {
