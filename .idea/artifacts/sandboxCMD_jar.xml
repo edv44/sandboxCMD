@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="sandboxCMD:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/sandboxCMD_jar</output-path>
+    <root id="archive" name="sandboxCMD.jar">
+      <element id="module-output" name="sandboxCMD" />
+    </root>
+  </artifact>
+</component>
