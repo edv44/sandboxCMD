@@ -10,11 +10,10 @@ import java.util.ArrayList;
 public class Item {
     boolean isEquipped;
     String name;
-
     //enum name {sword, axe, spear, hammer, dagger};
     //ArrayList<String> name = new ArrayList<String>(){"sword", "axe", "spear", "hammer", "dagger"};
     //String[] name = {"sword", "axe", "spear", "hammer", "dagger"};
-    enum type {weapon, armor}
+    enum type {WEAPON, ARMOR}
     int addHp;
     int addAttack;
     int addDefense;
@@ -23,7 +22,7 @@ public class Item {
     Item() {
         switch (Helper.getRandom(1, 2)) {
             case 1:
-                type weapon;
+                type WEAPON;
                 isEquipped = false;
                 //name = "Sword"; //r.next()
                 //name = name[Helper.getRandom(0, name.length)];
@@ -32,9 +31,10 @@ public class Item {
                 addAttack = 4;
                 return;
             case 2:
-                type armor;
+                type ARMOR;
                 isEquipped = false;
-                name = "Armor";
+                id = Helper.getRandom(0, 9999);
+                name = "Armor [" + id + "]";;
                 addHp = 75;
                 addDefense = 2;
                 return;

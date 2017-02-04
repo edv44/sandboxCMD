@@ -4,8 +4,6 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static Scanner in = new Scanner(System.in);
-
     public static void main(String[] args) {
         String characterName = initName();
         String characterClass = initClass();
@@ -13,22 +11,21 @@ public class Main {
         gameLoop(hero);
     }
 
-    public static String initName() {
+    private static String initName() {
         System.out.print("Hello!\nEnter your name: ");
-        return in.next();
+        return Helper.read();
     }
 
-    public static String initClass() {
+    private static String initClass() {
         System.out.println("Choose your class:\n1 Warrior\n2 Rogue ");
-        return in.next(); //todo: add mechanism for input validation
+        return Helper.read(); //todo: add mechanism for input validation
     }
 
-    public static void gameLoop(Hero hero) {
+    private static void gameLoop(Hero hero) {
         Helper.clearScreen();
-        Helper.threadSleep(500); //2000
         hero.showStats();
         System.out.println("\n\nSelect an action: \n1 Character info.\n2 Search for the enemy.\n3 Inventory.\n4 Move to another location.\n5 Use healing potion [#count#].\n\n");
-        String select = in.next();
+        String select = Helper.read();
         switch (select) {
             case "1": //1 Character info.
                 hero.showFullStats();

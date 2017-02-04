@@ -55,7 +55,8 @@ public class Hero {
     }
 
     public void showFullStats() {
-        System.out.printf("\nName: %s.\nLevel: %s (%s/%s).\nClass: %s\n\nAttack: %s.\nDefense: %s.\n\nDefeated monsters: %s.\n", characterName, characterLevel, characterCurExp, characterExpToUp, characterClass, characterAttack, characterDefense, monsterCounter);
+        System.out.printf("\nName: %s.\nLevel: %s (%s/%s).\nClass: %s.\n\nHP: %s/%s.\nAttack: %s.\nDefense: %s.\n\nDefeated monsters: %s.\n\n1 To continue.\n", characterName, characterLevel, characterCurExp, characterExpToUp, characterClass, characterCurHp, characterHp, characterAttack, characterDefense, monsterCounter);
+        Helper.read();
     }
 
     public void battle(Hero _hero, Enemy _enemy) {
@@ -67,24 +68,33 @@ public class Hero {
             if (Helper.hit(_hero, _enemy) || Helper.hit(_enemy, _hero)) break;
             round++;
         }
-        Helper.threadSleep(1500);
+        System.out.println("\n1 To continue.");
+        Helper.read();
     }
 
     public void getInventory() {
         if (inventory.isEmpty()) {
-            System.out.println("Inventory is empty.");
-        } else { //is there any way to do in one string?
+            System.out.println("Inventory is empty.\n1 To continue.");
+            Helper.read();
+        } else {
             int i = 1;
             for (Item x : inventory) {
-                if (x.isEquipped) { //equipped item?
+                if (x.isEquipped) {
                     System.out.printf("[%s] %s [equipped].\n", i, x.name);
                 } else System.out.printf("[%s] %s.\n", i, x.name);
                 i++;
             }
-            System.out.println("Do tou want to equip item?\n1 yes\n2 no");
-            if (Main.in.nextInt() == 1) {
-                System.out.println("Which item?");
-                equip(inventory.get(Main.in.nextInt() - 1));
+            System.out.println("\n1 To continue.\n2 To equip item.\n");
+            switch (Helper.read()) {
+                case "1":
+                    break;
+                case "2":
+                    System.out.println("Which item you want to equip?");
+                    equip(inventory.get(Helper.in.nextInt() - 1));
+                    System.out.println("\n1 To continue.");
+                    Helper.read();
+                default:
+                    break;
             }
         }
     }
