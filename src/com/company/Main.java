@@ -1,7 +1,5 @@
 package com.company;
 
-import java.util.Scanner;
-
 public class Main {
 
     public static void main(String[] args) {
@@ -32,8 +30,10 @@ public class Main {
                 gameLoop(hero);
             case "2": //2 Search for the enemy.
                 //todo: hero.location > generate monster from this location
-                Enemy enemy = new Enemy(hero.characterLocation);
-                hero.battle(hero, enemy);
+                if (hero.characterCurHp > 0) {
+                    Enemy enemy = new Enemy(hero.characterLevel);
+                    hero.battle(hero, enemy);
+                } else hero.goTown(hero);
                 gameLoop(hero);
             case "3": //3 Inventory.
                 hero.getInventory();

@@ -16,19 +16,17 @@ public class Hero {
     public int characterCurExp;
     public int characterExpToUp;
     public int monsterCounter;
-    public int characterLocation;
-    //ArrayList<String> equipped = new ArrayList<>();
-    ArrayList<Item> inventory = new ArrayList<>();
+    public int money;
+    public ArrayList<Item> inventory = new ArrayList<>();
     public boolean isWeaponEquipped = false;
-
+    public boolean isArmorEquipped = false;
 
     public Hero(String _heroName, String _heroClass) {
         characterName = _heroName;
         characterLevel = 1;
         characterCurExp = 0;
         characterExpToUp = 100;
-        monsterCounter = 0;
-        characterLocation = 1;
+        money = 0;
 
         switch (_heroClass) {
             case "1":
@@ -55,7 +53,7 @@ public class Hero {
     }
 
     public void showFullStats() {
-        System.out.printf("\nName: %s.\nLevel: %s (%s/%s).\nClass: %s.\n\nHP: %s/%s.\nAttack: %s.\nDefense: %s.\n\nDefeated monsters: %s.\n\n1 To continue.\n", characterName, characterLevel, characterCurExp, characterExpToUp, characterClass, characterCurHp, characterHp, characterAttack, characterDefense, monsterCounter);
+        System.out.printf("\nName: %s.\nLevel: %s (%s/%s).\nClass: %s.\n\nHP: %s/%s.\nAttack: %s.\nDefense: %s.\n\nGold: %s.\nDefeated monsters: %s.\n\n1 To continue.\n", characterName, characterLevel, characterCurExp, characterExpToUp, characterClass, characterCurHp, characterHp, characterAttack, characterDefense, money, monsterCounter);
         Helper.read();
     }
 
@@ -100,17 +98,41 @@ public class Hero {
     }
 
     public void equip(Item _item) {
-        if (!isWeaponEquipped) {//all items affect this property; todo: diff construction for each item type
-            _item.isEquipped = true;
-            isWeaponEquipped = true;
-            characterAttack += _item.addAttack;
-            characterDefense += _item.addDefense;
-            characterHp += _item.addHp;
-            characterCurHp += _item.addHp;
-            System.out.println(_item.name + " has been equipped.");
-        } else {
-            //unequip current item and equip this item
-            System.out.println("Weapon is already equipped.");
+
+        switch (_item.type) {
+            case WEAPON:
+                if (!isWeaponEquipped) {
+                    isWeaponEquipped = true;
+                    equipTrue(_item);
+                } else equipFalse(_item);
+                break;
+            case ARMOR:
+                if (!isArmorEquipped) {
+                    isArmorEquipped = true;
+                    equipTrue(_item);
+                } else equipFalse(_item);
+                break;
+            default:
+                System.out.println("Please enter valid number.");
+                break;
         }
+    }
+
+    private void equipTrue(Item _item) {
+        _item.isEquipped = true;
+        characterAttack += _item.addAttack;
+        characterDefense += _item.addDefense;
+        characterHp += _item.addHp;
+        characterCurHp += _item.addHp;
+        System.out.println(_item.name + " has been equipped.");
+    }
+
+    public void goTown(Hero _hero) {
+        Helper.clearScreen();
+        System.out.printf("\n%s [0/%s] can't fight. Moving to the town.", characterName, characterHp);
+    }
+
+    private void equipFalse(Item _item) {
+        System.out.println(_item.type + " slot is not empty.");
     }
 }
