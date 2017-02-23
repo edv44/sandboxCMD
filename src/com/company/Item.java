@@ -12,6 +12,8 @@ public class Item {
     double addAttack;
     double addDefense;
     double amplifier;
+    double price;
+    String[] names = {"Axe", "Sword", "Blunt"};
 
     Item(Helper.itemQuality _quality, Helper.itemType _type) {
         quality = _quality;

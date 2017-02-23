@@ -22,24 +22,27 @@ public class Main {
     private static void gameLoop(Hero hero) {
         Helper.clearScreen();
         hero.showStats();
-        System.out.println("\n\nSelect an action: \n1 Character info.\n2 Search for the enemy.\n3 Inventory.\n4 Move to another location.\n5 Use healing potion [#count#].\n\n");
-        String select = Helper.read();
-        switch (select) {
+        System.out.println("\n\nSelect an action: \n1 Character info.\n2 Search for the enemy.\n3 Inventory.\n4 Go to the town.\n5 Use healing potion [#count#].\n\n");
+        switch (Helper.read()) {
             case "1": //1 Character info.
                 hero.showFullStats();
                 gameLoop(hero);
-            case "2": //2 Search for the enemy.
+            case "2": //2 Search for the enemy. todo: Move to another location (bring the mechanism).
                 //todo: hero.location > generate monster from this location
-                if (hero.characterCurHp > 0) {
-                    Enemy enemy = new Enemy(hero.characterLevel);
+                if (hero.hpCur > 0) {
+                    Enemy enemy = new Enemy(hero.level);
                     hero.battle(hero, enemy);
-                } else hero.goTown(hero);
+                } else {
+                    Helper.clearScreen();
+                    System.out.printf("\n%s [0/%s] need some rest, you can restore HP in the town.\n1 To continue.\n", hero.name, hero.hpMax);
+                    Helper.read();
+                }
                 gameLoop(hero);
             case "3": //3 Inventory.
                 hero.getInventory();
                 gameLoop(hero);
-            case "4": //4 Move to another location.
-                //todo: bring the mechanism
+            case "4": //4 Go to the town (rest, shop, blacksmith, etc).
+                hero.goTown(hero);
                 gameLoop(hero);
             case "5": //5 Use healing potion [#count#].
                 //todo: use heal potion
