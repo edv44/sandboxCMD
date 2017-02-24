@@ -4,7 +4,7 @@ public class Main {
 
     public static void main(String[] args) {
         String characterName = initName();
-        String characterClass = initClass();
+        int characterClass = initClass();
         Hero hero = new Hero(characterName, characterClass);
         gameLoop(hero);
     }
@@ -14,9 +14,9 @@ public class Main {
         return Helper.read();
     }
 
-    private static String initClass() {
+    private static int initClass() {
         System.out.println("Choose your class:\n1 Warrior\n2 Rogue ");
-        return Helper.read(); //todo: add mechanism for input validation
+        return Integer.parseInt(Helper.read()); //todo: add mechanism for input validation
     }
 
     private static void gameLoop(Hero hero) {
@@ -30,8 +30,8 @@ public class Main {
             case "2": //2 Search for the enemy. todo: Move to another location (bring the mechanism).
                 //todo: hero.location > generate monster from this location
                 if (hero.hpCur > 0) {
-                    Enemy enemy = new Enemy(hero.level);
-                    hero.battle(hero, enemy);
+                    //hero.battle(hero, Enemy.generate(hero.level));
+                    hero.battleOOP(hero, Enemy.generate(hero.level));
                 } else {
                     Helper.clearScreen();
                     System.out.printf("\n%s [0/%s] need some rest, you can restore HP in the town.\n1 To continue.\n", hero.name, hero.hpMax);

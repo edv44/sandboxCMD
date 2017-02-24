@@ -3,25 +3,36 @@ package com.company;
 /**
  * Created by edv44 on 30.01.2017.
  */
-class Enemy {
-    public String name;
-    public int attack;
-    public int defense;
-    public int curHp;
-    public int maxHp;
+class Enemy extends Character {
     public int exp;
-    public int level;
-    public int money;
+    public int gold;
     String[] names = {"Wolf", "Bear", "Boar"};
 
-    public Enemy(int _heroLevel) {
-        level = Helper.getRandom(_heroLevel, _heroLevel + 3);
-        name = names[Helper.getRandom(1, names.length - 1)];
+    public static Enemy generate(int _heroLevel) {
+        Enemy enemy = new Enemy();
+        enemy.level = Helper.getRandom(_heroLevel, _heroLevel + 3);
+        enemy.name = enemy.names[Helper.getRandom(1, enemy.names.length - 1)];
+        enemy.calcStats();
+        return enemy;
+    }
+
+    void calcStats() {
         attack = 16 * level;
         defense = 2 * level;
-        maxHp = 44 * level;
+        hpMax = 44 * level;
+        hpCur = hpMax;
         exp = 12 * level;
-        curHp = maxHp;
-        money = Math.round(attack + defense + maxHp) / 3;
+        gold = Math.round(attack + defense + hpMax) / 3;
     }
+
+    @Override
+    protected void targetDefeated() {
+        System.out.println("Game over."); //todo: to be done
+    }
+
+//    @Override
+//    public boolean hit(Character target){ //works fine, released just to test override
+//        System.out.println("@overrided Enemy super.hit test");
+//        return super.hit(target);
+//    }
 }

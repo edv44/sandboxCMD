@@ -33,17 +33,17 @@ public class Helper {
     public static boolean hit(Hero _hero, Enemy _enemy) {
         int heroDamage = _hero.attack - _enemy.defense;
 
-        _enemy.curHp -= heroDamage;
-        if (_enemy.curHp <= 0) {
-            _enemy.curHp = 0;
-            _hero.monsterCounter++;
+        _enemy.hpCur -= heroDamage;
+        if (_enemy.hpCur <= 0) {
+            _enemy.hpCur = 0;
+            _hero.enemyCounter++;
             drop(_hero, _enemy);
-            System.out.printf("\n%s[%s/%s] hits %s[%s/%s] by %s damage.\n\n", _hero.name, _hero.hpCur, _hero.hpMax, _enemy.name, _enemy.curHp, _enemy.maxHp, heroDamage); //hit info
+            System.out.printf("\n%s[%s/%s] hits %s[%s/%s] by %s damage.\n\n", _hero.name, _hero.hpCur, _hero.hpMax, _enemy.name, _enemy.hpCur, _enemy.hpMax, heroDamage); //hit info
             System.out.printf("Winner: %s.\nEarned: %s exp, %s.\n", _hero.name, _enemy.exp, _hero.inventory.get(_hero.inventory.size() - 1).name); //win info
             lvlUp(_hero, _enemy);
             return true;
         } else {
-            System.out.printf("\n%s[%s/%s] hits %s[%s/%s] by %s damage.", _hero.name, _hero.hpCur, _hero.hpMax, _enemy.name, _enemy.curHp, _enemy.maxHp, heroDamage); //hit info
+            System.out.printf("\n%s[%s/%s] hits %s[%s/%s] by %s damage.", _hero.name, _hero.hpCur, _hero.hpMax, _enemy.name, _enemy.hpCur, _enemy.hpMax, heroDamage); //hit info
             return false;
         }
     }
@@ -54,17 +54,17 @@ public class Helper {
         _hero.hpCur -= damage;
         if (_hero.hpCur <= 0) {
             _hero.hpCur = 0;
-            System.out.printf("\n%s[%s/%s] hits %s[%s/%s] by %s damage.\n", _enemy.name, _enemy.curHp, _enemy.maxHp, _hero.name, _hero.hpCur, _hero.hpMax, damage); //hit info
+            System.out.printf("\n%s[%s/%s] hits %s[%s/%s] by %s damage.\n", _enemy.name, _enemy.hpCur, _enemy.hpMax, _hero.name, _hero.hpCur, _hero.hpMax, damage); //hit info
             System.out.printf("Winner: %s.\n", _enemy.name); //win info
             return true;
         } else {
-            System.out.printf("\n%s[%s/%s] hits %s[%s/%s] by %s damage.\n", _enemy.name, _enemy.curHp, _enemy.maxHp, _hero.name, _hero.hpCur, _hero.hpMax, damage); //hit info
+            System.out.printf("\n%s[%s/%s] hits %s[%s/%s] by %s damage.\n", _enemy.name, _enemy.hpCur, _enemy.hpMax, _hero.name, _hero.hpCur, _hero.hpMax, damage); //hit info
             return false;
         }
     }
 
     public static void drop(Hero _hero, Enemy _enemy) {
-        _hero.money += _enemy.money;
+        _hero.gold += _enemy.gold;
         _hero.inventory.add(generateItem(_enemy.level, new Item(getItemQuality(), getItemType())));
     }
 
