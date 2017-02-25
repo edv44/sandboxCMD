@@ -1,9 +1,6 @@
 package com.company;
 
-/**
- * Created by edv44 on 23.02.2017.
- */
-public abstract class ClassWarrior extends HeroClass {
+abstract class ClassWarrior extends HeroClass {
 
     ClassWarrior() {
         name = "Warrior";

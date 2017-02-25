@@ -31,7 +31,7 @@ public class Main {
                 //todo: hero.location > generate monster from this location
                 if (hero.hpCur > 0) {
                     //hero.battle(hero, Enemy.generate(hero.level));
-                    hero.battleOOP(hero, Enemy.generate(hero.level));
+                    hero.battle(Enemy.generate(hero.level));
                 } else {
                     Helper.clearScreen();
                     System.out.printf("\n%s [0/%s] need some rest, you can restore HP in the town.\n1 To continue.\n", hero.name, hero.hpMax);
