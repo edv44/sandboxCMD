@@ -3,9 +3,9 @@ package com.company;
 class Enemy extends Character {
     private String[] names = {"Wolf", "Bear", "Boar"};
 
-    static Enemy generate(int _heroLevel) {
+    static Enemy generate() {
         Enemy enemy = new Enemy();
-        enemy.level = Helper.getRandom(_heroLevel, _heroLevel + 2);
+        enemy.level = Hero.getInstance().level;
         enemy.name = enemy.names[Helper.getRandom(1, enemy.names.length - 1)];
         enemy.calcStats();
         return enemy;
@@ -14,16 +14,18 @@ class Enemy extends Character {
     private void calcStats() {
         attack = 11 * level;
         defense = level;
-        hpMax = 44 * level;
+        hpMax = 38 * level;
         hpCur = hpMax;
-        expCur = 12 * level;
-        gold = Math.round(attack + defense + hpMax) / 3;
+        expCur = defense + Math.round(attack + hpMax) / 2;
+        gold = (int) ((defense + Math.round(attack + hpMax) / 2) * 1.15);
     }
 
     @Override
-    protected void targetDefeated(Character _target) {
-        System.out.println("\n\nGAME OVER."); //todo: to be done
-        System.exit(0);
+    protected void death() {
+        System.out.printf("\n\n%s defeated %s!", Hero.getInstance().name, name);
+        Hero.getInstance().enemyCounter++;
+        Hero.getInstance().drop(this);
+        Hero.getInstance().lvlUp(this);
     }
 
 //    @Override

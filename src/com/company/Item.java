@@ -58,7 +58,7 @@ class Item {
 
         switch (_item.type) {
             case WEAPON:
-                _item.name = _item.names[Helper.getRandom(0, _item.names.length)] + " [" + Helper.getRandom(0, 9999) + "] [" + _item.quality + "]";
+                _item.name = _item.names[Helper.getRandom(0, _item.names.length - 1)] + " [" + Helper.getRandom(0, 9999) + "] [" + _item.quality + "]";
                 _item.addAttack = _enemyLvl * _item.amplifier;
                 break;
             case ARMOR:

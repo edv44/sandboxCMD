@@ -2,6 +2,8 @@
   <dictionary name="edv44">
     <words>
       <w>attackable</w>
+      <w>equipable</w>
+      <w>unequip</w>
     </words>
   </dictionary>
 </component>

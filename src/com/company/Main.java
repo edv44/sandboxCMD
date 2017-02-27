@@ -1,12 +1,13 @@
 package com.company;
 
 public class Main {
+    static String characterName;
+    static int characterClass;
 
     public static void main(String[] args) {
-        String characterName = initName();
-        int characterClass = initClass();
-        Hero hero = new Hero(characterName, characterClass);
-        gameLoop(hero);
+        characterName = initName();
+        characterClass = initClass();
+        gameLoop();
     }
 
     private static String initName() {
@@ -19,37 +20,39 @@ public class Main {
         return Integer.parseInt(Helper.read()); //todo: add mechanism for input validation
     }
 
-    private static void gameLoop(Hero hero) {
+    private static void gameLoop() {
         Helper.clearScreen();
-        hero.showStats();
+        Hero.getInstance().showStats();
         System.out.println("\n\nSelect an action: \n1 Character info.\n2 Search for the enemy.\n3 Inventory.\n4 Go to the town.\n5 Use healing potion [#count#].\n\n");
         switch (Helper.read()) {
             case "1": //1 Character info.
-                hero.showFullStats();
-                gameLoop(hero);
+                Hero.getInstance().showFullStats();
+                gameLoop();
             case "2": //2 Search for the enemy. todo: Move to another location (bring the mechanism).
                 //todo: hero.location > generate monster from this location
-                if (hero.hpCur > 0) {
+                if (Hero.getInstance().hpCur > 0) {
                     //hero.battle(hero, Enemy.generate(hero.level));
-                    hero.battle(Enemy.generate(hero.level));
+                    Hero.getInstance().battle(Enemy.generate());
                 } else {
                     Helper.clearScreen();
-                    System.out.printf("\n%s [0/%s] need some rest, you can restore HP in the town.\n1 To continue.\n", hero.name, hero.hpMax);
+                    System.out.printf("\n%s [0/%s] need some rest, you can restore HP in the town.\n1 To continue.\n", Hero.getInstance().name, Hero.getInstance().hpMax);
                     Helper.read();
                 }
-                gameLoop(hero);
+                gameLoop();
             case "3": //3 Inventory.
-                hero.getInventory();
-                gameLoop(hero);
+                Hero.getInstance().getInventory();
+                gameLoop();
             case "4": //4 Go to the town (rest, shop, blacksmith, etc).
-                hero.goTown(hero);
-                gameLoop(hero);
+                Hero.getInstance().goTown();
+                gameLoop();
             case "5": //5 Use healing potion [#count#].
                 //todo: use heal potion
-                gameLoop(hero);
+                gameLoop();
+//            case "99": //99 test Gear class
+//                Hero.getInstance().addItem();
             default:
                 System.out.println("Please type valid number.");
-                gameLoop(hero);
+                gameLoop();
         }
     }
 }

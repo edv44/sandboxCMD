@@ -8,22 +8,32 @@ public class Hero extends Character {
     private int agility;
     private int vitality;
     private int intellect;
-    private int enemyCounter;
+    int enemyCounter;
     private int statPoints;
     private int skillPoints;
     private ArrayList<Item> inventory = new ArrayList<>();
+    private ArrayList<Gear> inventoryGear = new ArrayList<>(); //todo: just for Gear class debug
     private boolean isWeaponEquipped = false;
     private boolean isArmorEquipped = false;
 
     private HeroClass heroClass;
+    private static Hero instance;
 
-    Hero(String _name, int _heroClass) {
-        name = _name;
+    static Hero getInstance() {
+        if (instance == null) {
+            instance = new Hero();
+        }
+        return instance;
+    }
+
+    private Hero() {
+        instance = this;
+        name = Main.characterName;
         level = 1;
         expCur = 0;
         expMax = 180;
 
-        switch (_heroClass) {
+        switch (Main.characterClass) {
             case 2:
                 heroClass = new ClassRogue() {
                 };
@@ -49,11 +59,10 @@ public class Hero extends Character {
         this.skillPoints = 10; //reset to 0
     }
 
-    @Override //todo: to be done (log + loot + exp)
-    protected void targetDefeated(Character _target) {
-        enemyCounter++;
-        drop(_target);
-        lvlUp(_target);
+    @Override
+    protected void death() {
+        System.out.println("\n\nGAME OVER."); //todo:TBD
+        System.exit(0);
     }
 
     void showStats() {
@@ -68,10 +77,12 @@ public class Hero extends Character {
     void battle(Enemy _enemy) {
         System.out.printf("Battle between %s[%s] and %s has been stated.", name, level, _enemy.name);
         int round = 1;
-        while (true) {
+        while (this.hpCur > 0 && _enemy.hpCur > 0) {
             Helper.threadSleep(500);
             System.out.printf("\n\nRound %s.\n", round++);
-            if (hit(_enemy) || _enemy.hit(this)) break;
+//            if (hit(_enemy) || _enemy.hit(this)) break;
+            hit(_enemy);                                    //очень убого выглядит
+            if (_enemy.hpCur > 0) _enemy.hit(this); //это условие проверяется дважды, тут и в цикле
         }
         System.out.println("\n1 To continue.");
         Helper.read();
@@ -138,49 +149,49 @@ public class Hero extends Character {
         System.out.println(_item.type + " slot is not empty.");
     }
 
-    void goTown(Hero _hero) {
+    void goTown() {
         Helper.clearScreen();
         System.out.printf("You have come into the town and now you're standing on the central square.\nWhere do you want to go?\n\n1 Home to have some rest.\n2 Shop.\n3 Blacksmith.\n4 Academy.\n5 Tavern.\n6 Leave the town.\n");
         String select = Helper.read();
         switch (select) {
             case "1": //Home (restore HP)
-                goHome(_hero);
-                goTown(_hero);
+                goHome();
+                goTown();
                 break;
             case "2": //Shop
-                goShop(_hero);
-                goTown(_hero);
+                goShop();
+                goTown();
                 break;
             case "3": //Blacksmith
-                goBlacksmith(_hero);
-                goTown(_hero);
+                goBlacksmith();
+                goTown();
                 break;
             case "4": //Academy
-                goAcademy(_hero);
-                goTown(_hero);
+                goAcademy();
+                goTown();
                 break;
             case "5": //Academy
-                goTavern(_hero);
-                goTown(_hero);
+                goTavern();
+                goTown();
                 break;
             case "6": //Leave town
                 break;
             default:
-                goTown(_hero);
+                goTown();
         }
     }
 
-    private void goHome(Hero _hero) {
+    private void goHome() {
         Helper.clearScreen();
-        while (_hero.hpCur < _hero.hpMax) {
-            _hero.hpCur++;
-            System.out.printf("%s [%s/%s] is resting.", _hero.name, _hero.hpCur, _hero.hpMax);
+        while (hpCur < hpMax) {
+            hpCur++;
+            System.out.printf("%s [%s/%s] is resting.", name, hpCur, hpMax);
             Helper.threadSleep(100);
             Helper.clearScreen(); //this method to clear single string in the command line is suck
         }
     }
 
-    private void goShop(Hero _hero) {
+    private void goShop() {
         Helper.clearScreen();
         System.out.printf("You have entered into the store. The seller greets you.\nWhat do you want to do?\n\n1 Buy weapon.\n2 Buy armor.\n3 Sell.\n");
         switch (Helper.read()) {
@@ -190,12 +201,12 @@ public class Hero extends Character {
                 ArrayList<Item> shopList = new ArrayList<>();
                 for (int i = 0; i < 10; i++) {
                     Item item = new Item(Item.itemType.WEAPON);
-                    shopList.add(Item.generateItem(_hero.level, item));
+                    shopList.add(Item.generateItem(level, item));
                     System.out.println((i + 1) + " " + shopList.get(i).name + " : $" + item.price); //todo: Add mechanism to generate item price
                 }
                 int itemToBuy = Integer.parseInt(Helper.read()) - 1; //todo: Add dumb protection (non numerical symbols)
                 if (itemToBuy >= 0 && itemToBuy < 10) { //todo: Add available gold check
-                    _hero.inventory.add(shopList.get(itemToBuy)); //todo: _hero.gold -= item.cost
+                    inventory.add(shopList.get(itemToBuy)); //todo: _hero.gold -= item.cost
                     System.out.printf("\nYou bought %s for $%s\n1 To continue.\n", shopList.get(itemToBuy).name, shopList.get(itemToBuy).price);
                 } else System.out.println("Please enter valid value.");
                 Helper.read();
@@ -209,89 +220,89 @@ public class Hero extends Character {
 
     } //todo:TBD
 
-    private void goAcademy(Hero _hero) {
+    private void goAcademy() {
         Helper.clearScreen();
         System.out.println("You comes to the academy.\n1 Teacher.\n2 Return to the town.\n");
         switch (Helper.read()) {
             case "1":
                 Helper.clearScreen();
-                System.out.printf("You have %s skill and %s stat points.\n\n1 To spend stat points.\n2 To spend skill points\n3 Leave teacher.\n\n", _hero.statPoints, _hero.skillPoints);
+                System.out.printf("You have %s skill and %s stat points.\n\n1 To spend stat points.\n2 To spend skill points\n3 Leave teacher.\n\n", statPoints, skillPoints);
                 switch (Helper.read()) {
                     case "1":
-                        if (_hero.statPoints > 0) spendStatPoints(_hero);
+                        if (statPoints > 0) spendStatPoints();
                         System.out.println("\nYou have no stat points. Come back when you grow your level.\n\n1 To resume.");
                         Helper.read();
-                        goAcademy(_hero);
+                        goAcademy();
                     case "2":
-                        if (_hero.skillPoints > 0) spendSkillPoints(_hero);
+                        if (skillPoints > 0) spendSkillPoints();
                         Helper.read();
-                        goAcademy(_hero);
+                        goAcademy();
                     case "3":
                         break;
 
                 }
                 break;
             case "2":
-                goTown(_hero);
+                goTown();
             default:
-                goShop(_hero);
+                goShop();
         }
     } //todo:TBD
 
-    private void goTavern(Hero _hero) {
+    private void goTavern() {
 
     } //todo:TBD
 
-    private void goBlacksmith(Hero _hero) {
+    private void goBlacksmith() {
 
     } //todo:TBD
 
-    private void spendStatPoints(Hero _hero) {
+    private void spendStatPoints() {
         System.out.printf("\n%s's stat points: %s\n1 To STR up.\n2 To AGI up.\n3 To VIT up.\n4 To INT up.\n5 Return back.\n", name, statPoints);
         switch (Helper.read()) {
             case "1":
-                _hero.strength++;
-                _hero.statPoints--;
+                strength++;
+                statPoints--;
                 System.out.printf("%s's STR: %s\n\n", name, strength);
-                if (_hero.statPoints > 0) {
-                    spendStatPoints(_hero);
+                if (statPoints > 0) {
+                    spendStatPoints();
                 }
                 break; //wtf
             case "2":
-                _hero.agility++;
-                _hero.statPoints--;
+                agility++;
+                statPoints--;
                 System.out.printf("%s's AGI: %s\n\n", name, agility);
-                if (_hero.statPoints > 0) {
-                    spendStatPoints(_hero);
+                if (statPoints > 0) {
+                    spendStatPoints();
                 }
                 break;
             case "3":
-                _hero.vitality++;
-                _hero.statPoints--;
+                vitality++;
+                statPoints--;
                 System.out.printf("%s's VIT: %s\n\n", name, vitality);
-                if (_hero.statPoints > 0) {
-                    spendStatPoints(_hero);
+                if (statPoints > 0) {
+                    spendStatPoints();
                 }
                 break;
             case "4":
-                _hero.intellect++;
-                _hero.statPoints--;
+                intellect++;
+                statPoints--;
                 System.out.printf("%s's INT: %s\n\n", name, intellect);
-                if (_hero.statPoints > 0) {
-                    spendStatPoints(_hero);
+                if (statPoints > 0) {
+                    spendStatPoints();
                 }
                 break;
             case "5":
                 break;
             default:
-                spendStatPoints(_hero);
+                spendStatPoints();
         }
     } //todo:TBD
 
-    private void spendSkillPoints(Hero _hero) { //todo:TBD
+    private void spendSkillPoints() { //todo:TBD
     }
 
-    private void lvlUp(Character _target) {
+    void lvlUp(Character _target) {
         expCur += _target.expCur;
         if (expCur >= expMax) {
             level++;
@@ -301,12 +312,64 @@ public class Hero extends Character {
             skillPoints += 1;
             System.out.printf("\nCongratulations! %s reached level %s.\nNow you have free %s skill and %s stat points.\n", name, level, skillPoints, statPoints);
         }
-    }
+    } //move > enemy class
 
-    private void drop(Character _target) {
+    void drop(Character _target) {
+        String i1 = "", i2 = "", i3 = "";
         int getGold = _target.gold;
         gold += getGold;
-        inventory.add(Item.generateItem(_target.level, new Item()));
-        System.out.printf("\nEarned: %s exp, %s gold, %s.\n", _target.expCur, getGold, inventory.get(inventory.size() - 1).name); //win info
+//        drop resources 1-2 todo:TBD
+        int r = Helper.getRandom(0, 999);
+        if (r < 600) r = 1;
+        else if (r >= 600 && r < 850) r = 2;
+        else if (r >= 850 && r < 950) r = 3;
+        else r = 4;
+
+        switch (r) {
+            case 1: // 60% - consumable; todo:TBD
+                break;
+            case 2: // 25% - item;
+                inventory.add(Item.generateItem(_target.level, new Item()));
+                i1 = ", " + inventory.get(inventory.size() - 1).name;
+                break;
+            case 3: // 10% - item + item;
+                inventory.add(Item.generateItem(_target.level, new Item()));
+                i1 = ", " + inventory.get(inventory.size() - 1).name;
+                inventory.add(Item.generateItem(_target.level, new Item()));
+                i2 = ", " + inventory.get(inventory.size() - 1).name;
+                break;
+            case 4: // 5% - item + item + item;
+                inventory.add(Item.generateItem(_target.level, new Item()));
+                i1 = ", " + inventory.get(inventory.size() - 1).name;
+                inventory.add(Item.generateItem(_target.level, new Item()));
+                i2 = ", " + inventory.get(inventory.size() - 1).name;
+                inventory.add(Item.generateItem(_target.level, new Item()));
+                i3 = ", " + inventory.get(inventory.size() - 1).name;
+                break;
+        }
+
+        System.out.printf("\nEarned: %s exp, %s gold%s%s%s.\n", _target.expCur, getGold, i1, i2, i3); //win info
+    } //move > enemy class?
+
+    /*Item logic v2 - to be done*/
+
+    void addItem() {
+        //add item to inventory
+        Gear newItem = new Weapon(this);
+        inventoryGear.add(newItem);
+        System.out.printf("%s has been added to inventory.", newItem.name);
+    }
+
+    void equipItem(EquipableItem _item) {
+        //equip item from inventory
+
+    }
+
+    void unequipItem(Item _item) {
+        //unequip item to inventory
+    }
+
+    void useItem(UsableItem _item) {
+        //use item from inventory
     }
 }

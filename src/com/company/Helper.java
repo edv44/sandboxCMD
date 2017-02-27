@@ -6,6 +6,8 @@ import java.util.Scanner;
 class Helper {
     private static Random r = new Random();
     static Scanner in = new Scanner(System.in);
+    static String[] namesWeapon = {"Axe", "Sword", "Blunt"};
+    static String[] namesChest = {"Quilted Armor", "Leather armor", "Hard Leather Armor", "Studded Leather", "Ring Mail", "Scale Mail", "Breast Plate", "Chain Mail", "Splint Mail", "Light Plate", "Field Plate", "Plate Mail", "Gothic Plate", "Full Plate Mail", "Ancient Armor"};
 
     static String read() {
         return (in.next());
