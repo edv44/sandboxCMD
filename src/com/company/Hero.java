@@ -1,6 +1,8 @@
 package com.company;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Hero extends Character {
     private int expMax;
@@ -12,9 +14,7 @@ public class Hero extends Character {
     private int statPoints;
     private int skillPoints;
     private ArrayList<Item> inventory = new ArrayList<>();
-    private ArrayList<Gear> inventoryGear = new ArrayList<>(); //todo: just for Gear class debug
-    private boolean isWeaponEquipped = false;
-    private boolean isArmorEquipped = false;
+    private Map<ItemType, EquipableItem> equipped = new HashMap();
 
     private HeroClass heroClass;
     private static Hero instance;
@@ -74,79 +74,18 @@ public class Hero extends Character {
         Helper.read();
     }
 
-    void battle(Enemy _enemy) {
-        System.out.printf("Battle between %s[%s] and %s has been stated.", name, level, _enemy.name);
+    void battle(Enemy enemy) {
+        System.out.printf("Battle between %s[%s] and %s has been stated.", name, level, enemy.name);
         int round = 1;
-        while (this.hpCur > 0 && _enemy.hpCur > 0) {
+        while (this.hpCur > 0 && enemy.hpCur > 0) {
             Helper.threadSleep(500);
             System.out.printf("\n\nRound %s.\n", round++);
-//            if (hit(_enemy) || _enemy.hit(this)) break;
-            hit(_enemy);                                    //очень убого выглядит
-            if (_enemy.hpCur > 0) _enemy.hit(this); //это условие проверяется дважды, тут и в цикле
+//            if (hit(enemy) || enemy.hit(this)) break; //return boolean
+            hit(enemy);                                    //очень убого выглядит
+            if (enemy.hpCur > 0) enemy.hit(this); //это условие проверяется дважды, тут и в цикле
         }
         System.out.println("\n1 To continue.");
         Helper.read();
-    }
-
-    void getInventory() {
-        if (inventory.isEmpty()) {
-            System.out.println("Inventory is empty.\n1 To continue.");
-            Helper.read();
-        } else {
-            int i = 1;
-            for (Item x : inventory) {
-                if (x.isEquipped) {
-                    System.out.printf("[%s] %s [equipped].\n", i, x.name);
-                } else System.out.printf("[%s] %s.\n", i, x.name);
-                i++;
-            }
-            System.out.println("\n1 To continue.\n2 To equip item.\n");
-            switch (Helper.read()) {
-                case "1":
-                    break;
-                case "2":
-                    System.out.println("Which item you want to equip?");
-                    equip(inventory.get(Helper.in.nextInt() - 1));
-                    System.out.println("\n1 To continue.");
-                    Helper.read();
-                default:
-                    break;
-            }
-        }
-    }
-
-    private void equip(Item _item) {
-
-        switch (_item.type) {
-            case WEAPON:
-                if (!isWeaponEquipped) {
-                    isWeaponEquipped = true;
-                    equipTrue(_item);
-                } else equipFalse(_item);
-                break;
-            case ARMOR:
-                if (!isArmorEquipped) {
-                    isArmorEquipped = true;
-                    equipTrue(_item);
-                } else equipFalse(_item);
-                break;
-            default:
-                System.out.println("Please enter valid number.");
-                break;
-        }
-    }
-
-    private void equipTrue(Item _item) {
-        _item.isEquipped = true;
-        attack += _item.addAttack;
-        defense += _item.addDefense;
-        hpMax += _item.addHp;
-        hpCur += _item.addHp;
-        System.out.println(_item.name + " has been equipped.");
-    }
-
-    private void equipFalse(Item _item) {
-        System.out.println(_item.type + " slot is not empty.");
     }
 
     void goTown() {
@@ -191,23 +130,27 @@ public class Hero extends Character {
         }
     }
 
-    private void goShop() {
+    private void goShop() { //todo:TBD
         Helper.clearScreen();
         System.out.printf("You have entered into the store. The seller greets you.\nWhat do you want to do?\n\n1 Buy weapon.\n2 Buy armor.\n3 Sell.\n");
         switch (Helper.read()) {
             case "1": //Buy weapon
                 Helper.clearScreen();
-                System.out.println("Which one do you want to buy?\n");
                 ArrayList<Item> shopList = new ArrayList<>();
                 for (int i = 0; i < 10; i++) {
-                    Item item = new Item(Item.itemType.WEAPON);
-                    shopList.add(Item.generateItem(level, item));
-                    System.out.println((i + 1) + " " + shopList.get(i).name + " : $" + item.price); //todo: Add mechanism to generate item price
+                    EquipableItem item = new Sword();
+                    shopList.add(item);
+                    System.out.println((i + 1) + " " + shopList.get(i).name + " : $" + item.cost * 4); //todo: Add mechanism to generate item price
                 }
+                System.out.println("\nWhich one do you want to buy? [gold: " + gold + "]\n");
                 int itemToBuy = Integer.parseInt(Helper.read()) - 1; //todo: Add dumb protection (non numerical symbols)
-                if (itemToBuy >= 0 && itemToBuy < 10) { //todo: Add available gold check
-                    inventory.add(shopList.get(itemToBuy)); //todo: _hero.gold -= item.cost
-                    System.out.printf("\nYou bought %s for $%s\n1 To continue.\n", shopList.get(itemToBuy).name, shopList.get(itemToBuy).price);
+                if (itemToBuy >= 0 && itemToBuy < 10) {
+                    if (gold >= shopList.get(itemToBuy).cost * 4) {
+                        inventory.add(shopList.get(itemToBuy));
+                        gold -= shopList.get(itemToBuy).cost * 4;
+                        System.out.printf("\nYou bought %s for $%s\n1 To continue.\n", shopList.get(itemToBuy).name, shopList.get(itemToBuy).cost * 4);
+                        shopList.remove(itemToBuy);
+                    } else System.out.println("You don't have enough gold.");
                 } else System.out.println("Please enter valid value.");
                 Helper.read();
                 break;
@@ -302,8 +245,8 @@ public class Hero extends Character {
     private void spendSkillPoints() { //todo:TBD
     }
 
-    void lvlUp(Character _target) {
-        expCur += _target.expCur;
+    void lvlUp(Character target) {
+        expCur += target.expCur;
         if (expCur >= expMax) {
             level++;
             expCur -= expMax;
@@ -312,11 +255,11 @@ public class Hero extends Character {
             skillPoints += 1;
             System.out.printf("\nCongratulations! %s reached level %s.\nNow you have free %s skill and %s stat points.\n", name, level, skillPoints, statPoints);
         }
-    } //move > enemy class
+    } //move > enemy class //todo:make separate class getExp
 
-    void drop(Character _target) {
+    void drop(Character target) {
         String i1 = "", i2 = "", i3 = "";
-        int getGold = _target.gold;
+        int getGold = target.gold;
         gold += getGold;
 //        drop resources 1-2 todo:TBD
         int r = Helper.getRandom(0, 999);
@@ -329,47 +272,86 @@ public class Hero extends Character {
             case 1: // 60% - consumable; todo:TBD
                 break;
             case 2: // 25% - item;
-                inventory.add(Item.generateItem(_target.level, new Item()));
+                inventory.add(generateRandomEquipableItem());
                 i1 = ", " + inventory.get(inventory.size() - 1).name;
                 break;
             case 3: // 10% - item + item;
-                inventory.add(Item.generateItem(_target.level, new Item()));
+                inventory.add(generateRandomEquipableItem());
                 i1 = ", " + inventory.get(inventory.size() - 1).name;
-                inventory.add(Item.generateItem(_target.level, new Item()));
+                inventory.add(generateRandomEquipableItem());
                 i2 = ", " + inventory.get(inventory.size() - 1).name;
                 break;
             case 4: // 5% - item + item + item;
-                inventory.add(Item.generateItem(_target.level, new Item()));
+                inventory.add(generateRandomEquipableItem());
                 i1 = ", " + inventory.get(inventory.size() - 1).name;
-                inventory.add(Item.generateItem(_target.level, new Item()));
+                inventory.add(generateRandomEquipableItem());
                 i2 = ", " + inventory.get(inventory.size() - 1).name;
-                inventory.add(Item.generateItem(_target.level, new Item()));
+                inventory.add(generateRandomEquipableItem());
                 i3 = ", " + inventory.get(inventory.size() - 1).name;
                 break;
         }
-
-        System.out.printf("\nEarned: %s exp, %s gold%s%s%s.\n", _target.expCur, getGold, i1, i2, i3); //win info
+        System.out.printf("\nEarned: %s exp, %s gold%s%s%s.\n", target.expCur, getGold, i1, i2, i3); //win info
     } //move > enemy class?
 
     /*Item logic v2 - to be done*/
 
-    void addItem() {
-        //add item to inventory
-        Gear newItem = new Weapon(this);
-        inventoryGear.add(newItem);
-        System.out.printf("%s has been added to inventory.", newItem.name);
+//    void addItem() { //drop() has been implemented instead of this
+//        //add item to inventory
+//    }
+
+    void equipItem(EquipableItem item) { //equip item from inventory
+        if (equipped.containsKey(item.whichType)) {
+            unequipItem(item);
+        }
+        equipped.put(item.whichType, item);
+        inventory.remove(item);
     }
 
-    void equipItem(EquipableItem _item) {
-        //equip item from inventory
-
+    private void unequipItem(EquipableItem item) { //unequip item to inventory
+        inventory.add(equipped.get(item.whichType));
+        equipped.remove(item.whichType);
     }
 
-    void unequipItem(Item _item) {
-        //unequip item to inventory
+    void useItem(UsableItem item) { //use item from inventory
     }
 
-    void useItem(UsableItem _item) {
-        //use item from inventory
+    private void getEquipped() {
+        if (equipped.get(ItemType.WEAPON) != null) System.out.println("Weapon: " + equipped.get(ItemType.WEAPON).name);
+        if (equipped.get(ItemType.CHEST) != null) System.out.println("Chest: " + equipped.get(ItemType.CHEST).name);
+    }
+
+    private void getInventory() {
+        for (int i = 0; i < inventory.size(); i++) System.out.println(i + 1 + ": " + inventory.get(i).name + ".");
+    }
+
+    void getInventoryInfo() {
+        System.out.println("\nEquipped:");
+        getEquipped();
+        System.out.println("\nInventory:");
+        getInventory();
+        System.out.println("\n\nEnter item number to equip it or 'q' to return.");
+        String chose = Helper.read();
+        try {
+            Item item = Hero.getInstance().inventory.get(Integer.parseInt(chose) - 1);
+            equipItem((EquipableItem) item);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    private static EquipableItem generateRandomEquipableItem() {
+        int r = Helper.getRandom(1, 2);
+        EquipableItem newItem = null;
+        switch (r) {
+            case 1:
+                newItem = new Sword();
+                break;
+            case 2:
+                newItem = new Chest();
+                break;
+            default:
+                System.out.println("\n\nERROR: Hero.generateRandomEquipableItem throws some error.\n\n");
+        }
+        return newItem;
     }
 }

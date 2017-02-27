@@ -1,81 +1,77 @@
 package com.company;
 
+enum ItemType {
+    WEAPON, HELMET, CHEST, GLOVES, BELT, BOOTS
+}
+
+enum ItemQuality {
+    NORMAL, MAGIC, RARE, EPIC
+}
+
 class Item {
-    boolean isEquipped; // by default == false
     String name;
-    private itemQuality quality;
-    itemType type;
-    double addHp;
-    double addAttack;
-    double addDefense;
-    private double amplifier;
-    double price;
-    private String[] names = {"Axe", "Sword", "Blunt"};
+    int cost;
 
-    Item() { //Hero.drop
-        quality = getItemQuality();
-        type = getItemType();
+    Item() {
     }
 
-    Item(itemType _type) { //Hero.goShop.buy
-        quality = getItemQuality();
-        type = _type;
-    }
-
-    private static itemQuality getItemQuality() {
-        itemQuality q;
-        int x = Helper.getRandom(1, 100);
-        if (x <= 50) q = itemQuality.NORMAL;
-        else if (x > 50 && x <= 80) q = itemQuality.MAGIC;
-        else if (x > 80 && x <= 95) q = itemQuality.RARE;
-        else q = itemQuality.EPIC;
+    static ItemQuality getItemQuality() {
+        ItemQuality q;
+        int x = Helper.getRandom(1, 1000);
+        if (x <= 500) q = ItemQuality.NORMAL;
+        else if (x > 500 && x <= 800) q = ItemQuality.MAGIC;
+        else if (x > 800 && x <= 950) q = ItemQuality.RARE;
+        else q = ItemQuality.EPIC;
         return q;
     }
 
-    private static itemType getItemType() {
-        itemType t;
-        int y = Helper.getRandom(1, 100);
-        if (y <= 50) t = itemType.WEAPON;
-        else t = itemType.ARMOR;
-        return t;
+//    protected static ItemType getItemType() { //todo:add consumable?
+//        ItemType t;
+//        int y = Helper.getRandom(1, 1000);
+//        if (y <= 500) t = ItemType.SWORD;
+//        else t = ItemType.CHEST;
+//        return t;
+//    }
+
+    static double getAmplifier(ItemQuality whichQuality) {
+        if (whichQuality == ItemQuality.NORMAL) {
+            return 1;
+        } else if (whichQuality == ItemQuality.MAGIC) {
+            return 1.3;
+        } else if (whichQuality == ItemQuality.RARE) {
+            return 1.7;
+        } else return 2.3;
+    }
+}
+
+
+abstract class UsableItem extends Item {
+    UsableItem() {
+        super();
     }
 
-    static Item generateItem(Integer _enemyLvl, Item _item) {
-        switch (_item.quality) {
-            case NORMAL:
-                _item.amplifier = 1;
-                break;
-            case MAGIC:
-                _item.amplifier = 1.2;
-                break;
-            case RARE:
-                _item.amplifier = 1.5;
-                break;
-            case EPIC:
-                _item.amplifier = 2;
-                break;
-        }
+    public void useItem() {
+        Hero.getInstance().useItem(this);
+    }
+}
 
-        switch (_item.type) {
-            case WEAPON:
-                _item.name = _item.names[Helper.getRandom(0, _item.names.length - 1)] + " [" + Helper.getRandom(0, 9999) + "] [" + _item.quality + "]";
-                _item.addAttack = _enemyLvl * _item.amplifier;
-                break;
-            case ARMOR:
-                _item.name = "Chest [" + Helper.getRandom(0, 9999) + "] [" + _item.quality + "]";
-                _item.addHp = 25 * _enemyLvl * _item.amplifier;
-                _item.addDefense = _enemyLvl * _item.amplifier;
-                break;
-        }
-        _item.price = 50 * _item.amplifier * 5;
-        return _item;
+abstract class EquipableItem extends UsableItem {
+    ItemType whichType;
+    ItemQuality whichQuality;
+    double amplifier;
+
+    EquipableItem() {
+        super();
     }
 
-    enum itemQuality {
-        NORMAL, MAGIC, RARE, EPIC
+    private void equipItem() {
+        Hero.getInstance().equipItem(this);
     }
 
-    enum itemType {
-        ARMOR, WEAPON
+}
+
+class Consumable extends UsableItem { //heal potion, exp scroll, item chest(quality/type)
+    public Consumable(String name, int cost) {
+        super();
     }
 }

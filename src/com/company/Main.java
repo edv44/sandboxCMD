@@ -31,7 +31,6 @@ public class Main {
             case "2": //2 Search for the enemy. todo: Move to another location (bring the mechanism).
                 //todo: hero.location > generate monster from this location
                 if (Hero.getInstance().hpCur > 0) {
-                    //hero.battle(hero, Enemy.generate(hero.level));
                     Hero.getInstance().battle(Enemy.generate());
                 } else {
                     Helper.clearScreen();
@@ -40,7 +39,7 @@ public class Main {
                 }
                 gameLoop();
             case "3": //3 Inventory.
-                Hero.getInstance().getInventory();
+                Hero.getInstance().getInventoryInfo();
                 gameLoop();
             case "4": //4 Go to the town (rest, shop, blacksmith, etc).
                 Hero.getInstance().goTown();
@@ -48,8 +47,13 @@ public class Main {
             case "5": //5 Use healing potion [#count#].
                 //todo: use heal potion
                 gameLoop();
+//            case "97": //for item equip/unequip debug
+//                for (int i = 0; i <= 15; i++) Hero.getInstance().inventory.add(Hero.generateRandomEquipableItem());
+//                Hero.getInstance().getInventoryInfo();
+//            case "98": //98 test equip > hashMap
+//                for (int i = 0; i <= 150; i++) Hero.getInstance().equipItem(Hero.generateRandomEquipableItem());
 //            case "99": //99 test Gear class
-//                Hero.getInstance().addItem();
+//                for (int i = 0; i <= 150; i++) Hero.generateRandomEquipableItem();
             default:
                 System.out.println("Please type valid number.");
                 gameLoop();

@@ -5,9 +5,7 @@ import java.util.Scanner;
 
 class Helper {
     private static Random r = new Random();
-    static Scanner in = new Scanner(System.in);
-    static String[] namesWeapon = {"Axe", "Sword", "Blunt"};
-    static String[] namesChest = {"Quilted Armor", "Leather armor", "Hard Leather Armor", "Studded Leather", "Ring Mail", "Scale Mail", "Breast Plate", "Chain Mail", "Splint Mail", "Light Plate", "Field Plate", "Plate Mail", "Gothic Plate", "Full Plate Mail", "Ancient Armor"};
+    private static Scanner in = new Scanner(System.in);
 
     static String read() {
         return (in.next());
@@ -17,15 +15,15 @@ class Helper {
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     }
 
-    static void threadSleep(int _ms) {
+    static void threadSleep(int ms) {
         try {
-            Thread.sleep(_ms);
+            Thread.sleep(ms);
         } catch (Exception e) {
             System.out.println(e);
         }
     }
 
-    static int getRandom(int _min, int _max) {
-        return r.nextInt((_max - _min) + 1) + _min;
+    static int getRandom(int min, int max) {
+        return r.nextInt((max - min) + 1) + min;
     }
 }
