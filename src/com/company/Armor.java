@@ -63,12 +63,15 @@ class Chest extends Armor {
                 name = "Ancient Armor";
                 break;
         }
-        whichType = ItemType.CHEST;
-        whichQuality = getItemQuality();
-        amplifier = getAmplifier(whichQuality);
+        itemType = ItemType.CHEST;
+        itemQuality = getItemQuality();
+        amplifier = getAmplifier(itemQuality);
         double tmpDefense = amplifier * roll * 3; //костыль
         defense = (int) tmpDefense;
         cost = defense * 4;
-        name = "[" + whichQuality.toString() + "] " + name;
+//        itemStats.put(StatType.DEFENSE, roll);
+        itemStats.put(StatType.STRENGTH, roll+5);
+        itemStats.put(StatType.AGILITY, roll+5);
+        name = "[" + itemQuality.toString() + "] " + name;
     }
 }

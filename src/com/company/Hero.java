@@ -15,6 +15,7 @@ public class Hero extends Character {
     private int skillPoints;
     private ArrayList<Item> inventory = new ArrayList<>();
     private Map<ItemType, EquipableItem> equipped = new HashMap();
+    private Map<StatType, Integer> heroStats;
 
     private HeroClass heroClass;
     private static Hero instance;
@@ -47,16 +48,38 @@ public class Hero extends Character {
     }
 
     private void applyClass() {
+        resetStats();
         this.hpMax = heroClass.hpMax;
         this.hpCur = this.hpMax;
         this.attack = heroClass.attack;
         this.defense = heroClass.defense;
-        this.strength = heroClass.strength;
-        this.agility = heroClass.agility;
-        this.vitality = heroClass.vitality;
-        this.intellect = heroClass.intellect;
-        this.statPoints = 2; //reset to 0
-        this.skillPoints = 10; //reset to 0
+        this.statPoints = 0;
+        this.skillPoints = 0;
+    }
+
+    private void resetStats() {
+        this.heroStats = heroClass.stats;
+    }
+
+    void someMethod() { //todo:delete after debug and implement it in equipItem()
+        System.out.print("\nBefore equip: ");
+        showHeroStats();
+        for (Map.Entry<ItemType, EquipableItem> item : equipped.entrySet()) { //heroStats+=itemStats
+            System.out.print("\n\nItem: ");
+            showItemStats(item.getValue());
+            item.getValue().itemStats.forEach((k, v) -> heroStats.put(k, heroStats.get(k) + v));
+        }
+        System.out.print("\n\nAfter equip: ");
+        showHeroStats();
+
+    }
+
+    private void showHeroStats() { //show hero stats
+        heroStats.forEach((k, v) -> System.out.printf("\n%s -> %s: %s.", name, k, v));
+    }
+
+    private void showItemStats(EquipableItem item) { //show item stats
+        item.itemStats.forEach((k, v) -> System.out.printf("\n%s -> %s: %s.", item.name, k, v));
     }
 
     @Override
@@ -65,11 +88,11 @@ public class Hero extends Character {
         System.exit(0);
     }
 
-    void showStats() {
+    void showInfo() {
         System.out.printf("\n[%s | level %s | %s/%s hp] %s.", heroClass.name, level, hpCur, hpMax, name);
     }
 
-    void showFullStats() {
+    void showFullInfo() {
         System.out.printf("\nName: %s.\nLevel: %s (%s/%s).\nClass: %s.\n\nHP: %s/%s.\nAttack: %s.\nDefense: %s.\n\nStat points: %s\nSkill points: %s\n\nGold: %s.\nDefeated monsters: %s.\n\n1 To continue.\n", name, level, expCur, expMax, heroClass.name, hpCur, hpMax, attack, defense, statPoints, skillPoints, gold, enemyCounter);
         Helper.read();
     }
@@ -158,9 +181,7 @@ public class Hero extends Character {
                 break;
             case "3": //Sell
                 break;
-
         }
-
     } //todo:TBD
 
     private void goAcademy() {
@@ -300,16 +321,16 @@ public class Hero extends Character {
 //    }
 
     void equipItem(EquipableItem item) { //equip item from inventory
-        if (equipped.containsKey(item.whichType)) {
+        if (equipped.containsKey(item.itemType)) {
             unequipItem(item);
         }
-        equipped.put(item.whichType, item);
+        equipped.put(item.itemType, item);
         inventory.remove(item);
     }
 
     private void unequipItem(EquipableItem item) { //unequip item to inventory
-        inventory.add(equipped.get(item.whichType));
-        equipped.remove(item.whichType);
+        inventory.add(equipped.get(item.itemType));
+        equipped.remove(item.itemType);
     }
 
     void useItem(UsableItem item) { //use item from inventory
@@ -340,9 +361,8 @@ public class Hero extends Character {
     }
 
     private static EquipableItem generateRandomEquipableItem() {
-        int r = Helper.getRandom(1, 2);
         EquipableItem newItem = null;
-        switch (r) {
+        switch (Helper.getRandom(1, 2)) {
             case 1:
                 newItem = new Sword();
                 break;
@@ -353,5 +373,11 @@ public class Hero extends Character {
                 System.out.println("\n\nERROR: Hero.generateRandomEquipableItem throws some error.\n\n");
         }
         return newItem;
+    }
+
+    void add10Items() { //todo:delete after tests
+        for (int i = 0; i < 10; i++) {
+            inventory.add(generateRandomEquipableItem());
+        }
     }
 }

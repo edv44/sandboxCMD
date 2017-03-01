@@ -12,9 +12,9 @@ class Enemy extends Character {
     }
 
     private void calcStats() {
-        attack = 11 * level;
+        attack = Helper.getRandom(8, 14) * level;
         defense = level;
-        hpMax = 38 * level;
+        hpMax = Helper.getRandom(31, 45) * level;
         hpCur = hpMax;
         expCur = defense + Math.round(attack + hpMax) / 2;
         gold = (int) ((defense + Math.round(attack + hpMax) / 2) * 1.15);

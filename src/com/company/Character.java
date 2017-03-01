@@ -1,5 +1,7 @@
 package com.company;
 
+import java.util.Map;
+
 public abstract class Character implements IAttackable {
     String name;
     int hpCur;
@@ -9,6 +11,7 @@ public abstract class Character implements IAttackable {
     int level;
     int expCur;
     int gold;
+    Map<StatType, Integer> heroStats;
 
     @Override
     public void hit(Character target) { //todo: add battle log text

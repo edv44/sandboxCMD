@@ -5,7 +5,7 @@ abstract class Weapon extends EquipableItem {
 
     Weapon() {
         super();
-        whichType = ItemType.WEAPON;
+        itemType = ItemType.WEAPON;
     }
 }
 
@@ -50,11 +50,14 @@ class Sword extends Weapon {
                 name = "War Sword";
                 break;
         }
-        whichQuality = getItemQuality();
-        amplifier = getAmplifier(whichQuality);
+        itemQuality = getItemQuality();
+        amplifier = getAmplifier(itemQuality);
         double tmpDamage = amplifier * roll * 3; //костыль
-        damage = (int) tmpDamage;
-        cost = damage * 4;
-        name = "[" + whichQuality.toString() + "] " + name;
+        damage = (int) tmpDamage; //костыль
+        cost = damage * 4; //костыль
+//        itemStats.put(StatType.ATTACK, roll);
+        itemStats.put(StatType.STRENGTH, roll+5);
+        itemStats.put(StatType.AGILITY, roll+5);
+        name = "[" + itemQuality.toString() + "] " + name;
     }
 }

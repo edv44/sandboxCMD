@@ -1,14 +1,14 @@
 package com.company;
 
+import java.util.HashMap;
+import java.util.Map;
+
 abstract class HeroClass {
     String name;
     int hpMax;
     int attack;
     int defense;
-    int strength;
-    int agility;
-    int vitality;
-    int intellect;
+    Map<StatType, Integer> stats = new HashMap();
 }
 
 abstract class ClassWarrior extends HeroClass {
@@ -18,10 +18,13 @@ abstract class ClassWarrior extends HeroClass {
         hpMax = 100;
         attack = 700; //7
         defense = 7;
-        strength = 6;
-        agility = 4;
-        vitality = 7;
-        intellect = 3;
+//        itemStats.put(StatType.HP, 100);
+//        itemStats.put(StatType.ATTACK, 700);
+//        itemStats.put(StatType.DEFENSE, 7);
+        stats.put(StatType.STRENGTH, 6);
+        stats.put(StatType.AGILITY, 4);
+        stats.put(StatType.VITALITY, 7);
+        stats.put(StatType.INTELLECT, 3);
     }
 }
 
@@ -32,9 +35,12 @@ abstract class ClassRogue extends HeroClass {
         hpMax = 80;
         attack = 10;
         defense = 6;
-        strength = 5;
-        agility = 6;
-        vitality = 5;
-        intellect = 4;
+//        itemStats.put(StatType.ATTACK, 10);
+//        itemStats.put(StatType.DEFENSE, 6);
+//        itemStats.put(StatType.HP, 80);
+        stats.put(StatType.STRENGTH, 5);
+        stats.put(StatType.AGILITY, 6);
+        stats.put(StatType.VITALITY, 5);
+        stats.put(StatType.INTELLECT, 4);
     }
 }

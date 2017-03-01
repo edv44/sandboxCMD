@@ -1,5 +1,8 @@
 package com.company;
 
+import java.util.HashMap;
+import java.util.Map;
+
 enum ItemType {
     WEAPON, HELMET, CHEST, GLOVES, BELT, BOOTS
 }
@@ -56,9 +59,10 @@ abstract class UsableItem extends Item {
 }
 
 abstract class EquipableItem extends UsableItem {
-    ItemType whichType;
-    ItemQuality whichQuality;
+    ItemType itemType;
+    ItemQuality itemQuality;
     double amplifier;
+    Map<StatType, Integer> itemStats = new HashMap();
 
     EquipableItem() {
         super();
@@ -67,7 +71,6 @@ abstract class EquipableItem extends UsableItem {
     private void equipItem() {
         Hero.getInstance().equipItem(this);
     }
-
 }
 
 class Consumable extends UsableItem { //heal potion, exp scroll, item chest(quality/type)
