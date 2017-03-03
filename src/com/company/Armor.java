@@ -70,8 +70,11 @@ class Chest extends Armor {
         defense = (int) tmpDefense;
         cost = defense * 4;
 //        itemStats.put(StatType.DEFENSE, roll);
-        itemStats.put(StatType.STRENGTH, roll+5);
-        itemStats.put(StatType.AGILITY, roll+5);
-        name = "[" + itemQuality.toString() + "] " + name;
+        itemStats.put(StatType.STRENGTH, roll);
+        itemStats.put(StatType.AGILITY, roll);
+//        itemStats.add(new Stat(StatType.STRENGTH, roll));
+//        itemStats.add(new Stat(StatType.AGILITY, roll));
+//        name = "[" + itemQuality.toString() + "] " + name;
+        name = "[" + itemQuality.toString() + "] " + name + " S:" + itemStats.get(StatType.STRENGTH) + " A:" + itemStats.get(StatType.AGILITY);
     }
 }

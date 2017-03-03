@@ -10,7 +10,7 @@ abstract class BaseStat {
     int baseValue;
     int modValue;
 
-    ArrayList<EquipableItem> adjust;
+    ArrayList<EquipableItem> adjust = new ArrayList<>(); //keep item link that gives this stat
 
     BaseStat(int value) {
         baseValue = value;
@@ -26,7 +26,7 @@ abstract class BaseStat {
 }
 
 class Stat extends BaseStat {
-    StatType type;
+    private StatType type;
 
     Stat(StatType type, int value) {
         super(value);
@@ -34,20 +34,10 @@ class Stat extends BaseStat {
     }
 
     void calc() {
-//        modValue = baseValue;
-//        for(EquipableItem adj : adjust) modValue+=adj.setStats.put(type, baseValue);   //.setStats[type];
-//        this.setStats.put(StatType.STRENGTH, 5);//test
+        modValue = baseValue;
+//        for (EquipableItem item : adjust) {
+//        for (EquipableItem item : Hero.getInstance().) {
+//            modValue += item.itemStats.get(this.type);
+//        }
     }
 }
-
-//    ArrayList<EquipableItem> adjust{
-//        1 Quilled Armor; Map<StatType, Integer>
-//        setStats {
-//        DEFENSE, 5
-//        HP, 15
-// }
-//        2 Quilled Armor;
-//        3 Quilled Armor;
-//        4 Quilled Armor;
-//        5 Quilled Armor;
-//        }

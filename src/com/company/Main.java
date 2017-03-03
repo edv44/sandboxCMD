@@ -58,8 +58,8 @@ public class Main {
             case "5": //5 Use healing potion [#count#].
                 //todo: use heal potion
                 gameLoop();
-            case "95": //95 test adding stats on equip/unequip
-                Hero.getInstance().someMethod();
+//            case "95": //95 test adding stats on equip/unequip
+//                Hero.getInstance().someMethod();
 //            case "96": //96 i'm so lazy
 //                Hero.getInstance().add10Items();
 //                System.out.println("\nAdded 10 items to inventory.");

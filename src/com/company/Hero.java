@@ -14,8 +14,11 @@ public class Hero extends Character {
     private int statPoints;
     private int skillPoints;
     private ArrayList<Item> inventory = new ArrayList<>();
-    private Map<ItemType, EquipableItem> equipped = new HashMap();
-    private Map<StatType, Integer> heroStats;
+    private Map<ItemType, EquipableItem> equipped = new HashMap<>();
+    private Map<StatType, Integer> heroStats = new HashMap<>();
+//    private Map<Stat, Integer> heroStats = new HashMap<>();
+//    private ArrayList<Stat> heroStats;
+
 
     private HeroClass heroClass;
     private static Hero instance;
@@ -35,20 +38,21 @@ public class Hero extends Character {
         expMax = 180;
 
         switch (Main.characterClass) {
+            case 1:
+                heroClass = new ClassWarrior() {
+                };
             case 2:
                 heroClass = new ClassRogue() {
                 };
                 break;
-            case 1:
-            default:
-                heroClass = new ClassWarrior() { // todo: need mechanism for input validation
-                };
         }
+
         applyClass();
+        add10Items();//todo:delete after test
     }
 
     private void applyClass() {
-        resetStats();
+        initStats();
         this.hpMax = heroClass.hpMax;
         this.hpCur = this.hpMax;
         this.attack = heroClass.attack;
@@ -57,29 +61,29 @@ public class Hero extends Character {
         this.skillPoints = 0;
     }
 
-    private void resetStats() {
-        this.heroStats = heroClass.stats;
+    private void initStats() {
+        heroStats = heroClass.stats;
     }
 
-    void someMethod() { //todo:delete after debug and implement it in equipItem()
-        System.out.print("\nBefore equip: ");
-        showHeroStats();
-        for (Map.Entry<ItemType, EquipableItem> item : equipped.entrySet()) { //heroStats+=itemStats
-            System.out.print("\n\nItem: ");
-            showItemStats(item.getValue());
-            item.getValue().itemStats.forEach((k, v) -> heroStats.put(k, heroStats.get(k) + v));
-        }
-        System.out.print("\n\nAfter equip: ");
-        showHeroStats();
+//    private void resetStats() {
+//        heroStats.clear();
+//        initStats();
+//    }
 
-    }
+//    void someMethod() { //todo:delete after debug and implement it in equipItem()
+//        System.out.print("\nBefore equip: ");
+//        showHeroStats();
+//        for (Map.Entry<ItemType, EquipableItem> item : equipped.entrySet()) { //heroStats+=itemStats
+//            System.out.print("\n\nItem: ");
+//            showItemStats(item.getValue());
+//            item.getValue().itemStats.forEach((k, v) -> heroStats.put(k, heroStats.get(k) + v));
+//        }
+//        System.out.print("\n\nAfter equip: ");
+//        showHeroStats();
+//    }
 
     private void showHeroStats() { //show hero stats
-        heroStats.forEach((k, v) -> System.out.printf("\n%s -> %s: %s.", name, k, v));
-    }
-
-    private void showItemStats(EquipableItem item) { //show item stats
-        item.itemStats.forEach((k, v) -> System.out.printf("\n%s -> %s: %s.", item.name, k, v));
+        System.out.printf("\nSTR: %s | AGI: %s | VIT: %s | INT: %s.", heroStats.get(StatType.STRENGTH), heroStats.get(StatType.AGILITY), heroStats.get(StatType.VITALITY), heroStats.get(StatType.INTELLECT));
     }
 
     @Override
@@ -90,6 +94,7 @@ public class Hero extends Character {
 
     void showInfo() {
         System.out.printf("\n[%s | level %s | %s/%s hp] %s.", heroClass.name, level, hpCur, hpMax, name);
+        System.out.printf("\nSTR: %s | AGI: %s | VIT: %s | INT: %s.", heroStats.get(StatType.STRENGTH), heroStats.get(StatType.AGILITY), heroStats.get(StatType.VITALITY), heroStats.get(StatType.INTELLECT));
     }
 
     void showFullInfo() {
@@ -316,21 +321,27 @@ public class Hero extends Character {
 
     /*Item logic v2 - to be done*/
 
-//    void addItem() { //drop() has been implemented instead of this
+//    void addItem() { //for further use
 //        //add item to inventory
 //    }
 
     void equipItem(EquipableItem item) { //equip item from inventory
         if (equipped.containsKey(item.itemType)) {
             unequipItem(item);
+//            System.out.print("\nunequipped: "); //todo:delete after debug
+//            System.out.printf("STR: %s | AGI: %s | VIT: %s | INT: %s.", heroStats.get(StatType.STRENGTH), heroStats.get(StatType.AGILITY), heroStats.get(StatType.VITALITY), heroStats.get(StatType.INTELLECT)); //todo:delete after debug
         }
-        equipped.put(item.itemType, item);
-        inventory.remove(item);
+        equipped.put(item.itemType, item); //add equipped item to equipped list
+        inventory.remove(item); //remove equipped item from inventory list
+        item.itemStats.forEach((k, v) -> heroStats.put(k, heroStats.get(k) + v)); //add equipped item stats to hero stats
+//        System.out.print("\nequipped: "); //todo:delete after debug
+//        System.out.printf("STR: %s | AGI: %s | VIT: %s | INT: %s.", heroStats.get(StatType.STRENGTH), heroStats.get(StatType.AGILITY), heroStats.get(StatType.VITALITY), heroStats.get(StatType.INTELLECT)); //todo:delete after debug
     }
 
     private void unequipItem(EquipableItem item) { //unequip item to inventory
-        inventory.add(equipped.get(item.itemType));
-        equipped.remove(item.itemType);
+        equipped.get(item.itemType).itemStats.forEach((k, v) -> heroStats.put(k, heroStats.get(k) - equipped.get(item.itemType).itemStats.get(k))); //remove unequipped item stats from hero stats
+        inventory.add(equipped.get(item.itemType)); //add unequipped item to inventory list
+        equipped.remove(item.itemType); //remove unequipped item from equipped list
     }
 
     void useItem(UsableItem item) { //use item from inventory
@@ -375,9 +386,37 @@ public class Hero extends Character {
         return newItem;
     }
 
-    void add10Items() { //todo:delete after tests
+    private void add10Items() { //todo:delete after tests
         for (int i = 0; i < 10; i++) {
             inventory.add(generateRandomEquipableItem());
         }
     }
+
+    /*Item logic v2.1 (using Stat class) - to be done
+
+     private void calculateStats() {
+     //        for (Stat stat : heroStats) stat.calc(); //each stat value should be calculated for all equipped items
+     //        foreach (var stat in stats) {
+     //            stat.value.Calc();}
+     }
+
+     void equipItem(EquipableItem item) { //equip item from inventory
+     if (equipped.containsKey(item.itemType)) {
+     unequipItem(item);
+     }
+     equipped.put(item.itemType, item); /add equipped item to equipped list
+     inventory.remove(item); //remove equipped item from inventory list
+     //        calculateStats(); //todo:add stats 'hero stats + equipped item stats'
+     //        item.itemStats.forEach((k,v)->System.out.println("Key: " + k + "Value: " + v));
+     //        for (Map.Entry<ItemType, EquipableItem> item1 : equipped.entrySet()) { //heroStats+=itemStats
+     //            item1.getValue().itemStats.forEach((k, v) -> );
+     //        for(Stat stat : item.itemStats) stat.adjust.add(item);
+     //        }
+     }
+
+     private void unequipItem(EquipableItem item) { //unequip item to inventory
+     //todo:remove stats 'hero stats - unequipped item stats'
+     inventory.add(equipped.get(item.itemType)); //add unequipped item to inventory list
+     equipped.remove(item.itemType); //remove unequipped item from equipped list
+     }*/
 }

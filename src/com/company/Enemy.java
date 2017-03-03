@@ -30,7 +30,7 @@ class Enemy extends Character {
 
 //    @Override
 //    public boolean hit(Character target){ //works fine, released just to test override
-//        System.out.println("@overrided Enemy super.hit test");
+//        System.out.println("@override Enemy super.hit test");
 //        return super.hit(target);
 //    }
 }

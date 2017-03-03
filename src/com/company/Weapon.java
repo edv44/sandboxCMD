@@ -56,8 +56,12 @@ class Sword extends Weapon {
         damage = (int) tmpDamage; //костыль
         cost = damage * 4; //костыль
 //        itemStats.put(StatType.ATTACK, roll);
-        itemStats.put(StatType.STRENGTH, roll+5);
-        itemStats.put(StatType.AGILITY, roll+5);
-        name = "[" + itemQuality.toString() + "] " + name;
+        itemStats.put(StatType.STRENGTH, roll);
+        itemStats.put(StatType.AGILITY, roll);
+//        itemStats.add(new Stat(StatType.STRENGTH, roll));
+//        itemStats.add(new Stat(StatType.AGILITY, roll));
+//        name = "[" + itemQuality.toString() + "] " + name; //original
+//        name = "[" + itemQuality.toString() + "] " + name + " S:" + itemStats.get(0).baseValue + " A:" + itemStats.get(1).baseValue;
+        name = "[" + itemQuality.toString() + "] " + name + " S:" + itemStats.get(StatType.STRENGTH) + " A:" + itemStats.get(StatType.AGILITY);
     }
 }

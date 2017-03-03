@@ -1,5 +1,6 @@
 package com.company;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,7 +63,8 @@ abstract class EquipableItem extends UsableItem {
     ItemType itemType;
     ItemQuality itemQuality;
     double amplifier;
-    Map<StatType, Integer> itemStats = new HashMap();
+    Map<StatType, Integer> itemStats = new HashMap<>();
+//    ArrayList<Stat> itemStats = new ArrayList<>();
 
     EquipableItem() {
         super();
