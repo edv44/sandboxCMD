@@ -70,8 +70,8 @@ class Chest extends Armor {
         defense = (int) tmpDefense;
         cost = defense * 4;
 //        itemStats.put(StatType.DEFENSE, roll);
-        itemStats.put(StatType.STRENGTH, roll);
-        itemStats.put(StatType.AGILITY, roll);
+        itemStats.put(StatType.STRENGTH, roll + Helper.getRandom(0, 3)); //delete 'random(0, 3)' after debug
+        itemStats.put(StatType.AGILITY, roll + Helper.getRandom(0, 3)); //delete 'random(0, 3)' after debug
 //        itemStats.add(new Stat(StatType.STRENGTH, roll));
 //        itemStats.add(new Stat(StatType.AGILITY, roll));
 //        name = "[" + itemQuality.toString() + "] " + name;

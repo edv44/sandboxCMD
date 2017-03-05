@@ -64,7 +64,6 @@ abstract class EquipableItem extends UsableItem {
     ItemQuality itemQuality;
     double amplifier;
     Map<StatType, Integer> itemStats = new HashMap<>();
-//    ArrayList<Stat> itemStats = new ArrayList<>();
 
     EquipableItem() {
         super();

@@ -15,9 +15,9 @@ public class Hero extends Character {
     private int skillPoints;
     private ArrayList<Item> inventory = new ArrayList<>();
     private Map<ItemType, EquipableItem> equipped = new HashMap<>();
-    private Map<StatType, Integer> heroStats = new HashMap<>();
+//    private Map<StatType, Integer> heroStats = new HashMap<>();
 //    private Map<Stat, Integer> heroStats = new HashMap<>();
-//    private ArrayList<Stat> heroStats;
+    private ArrayList<Stat> heroStats;
 
 
     private HeroClass heroClass;
@@ -41,6 +41,7 @@ public class Hero extends Character {
             case 1:
                 heroClass = new ClassWarrior() {
                 };
+                break;
             case 2:
                 heroClass = new ClassRogue() {
                 };
@@ -63,27 +64,12 @@ public class Hero extends Character {
 
     private void initStats() {
         heroStats = heroClass.stats;
+        calcStats();
     }
 
-//    private void resetStats() {
-//        heroStats.clear();
-//        initStats();
-//    }
-
-//    void someMethod() { //todo:delete after debug and implement it in equipItem()
-//        System.out.print("\nBefore equip: ");
-//        showHeroStats();
-//        for (Map.Entry<ItemType, EquipableItem> item : equipped.entrySet()) { //heroStats+=itemStats
-//            System.out.print("\n\nItem: ");
-//            showItemStats(item.getValue());
-//            item.getValue().itemStats.forEach((k, v) -> heroStats.put(k, heroStats.get(k) + v));
-//        }
-//        System.out.print("\n\nAfter equip: ");
-//        showHeroStats();
-//    }
-
     private void showHeroStats() { //show hero stats
-        System.out.printf("\nSTR: %s | AGI: %s | VIT: %s | INT: %s.", heroStats.get(StatType.STRENGTH), heroStats.get(StatType.AGILITY), heroStats.get(StatType.VITALITY), heroStats.get(StatType.INTELLECT));
+//        System.out.printf("\nSTR: %s | AGI: %s | VIT: %s | INT: %s.", heroStats.get(StatType.STRENGTH), heroStats.get(StatType.AGILITY), heroStats.get(StatType.VITALITY), heroStats.get(StatType.INTELLECT));
+        System.out.printf("\nSTR: %s | AGI: %s | VIT: %s | INT: %s.", strength, agility, vitality, intellect);
     }
 
     @Override
@@ -94,11 +80,12 @@ public class Hero extends Character {
 
     void showInfo() {
         System.out.printf("\n[%s | level %s | %s/%s hp] %s.", heroClass.name, level, hpCur, hpMax, name);
-        System.out.printf("\nSTR: %s | AGI: %s | VIT: %s | INT: %s.", heroStats.get(StatType.STRENGTH), heroStats.get(StatType.AGILITY), heroStats.get(StatType.VITALITY), heroStats.get(StatType.INTELLECT));
+        showHeroStats();
     }
 
     void showFullInfo() {
         System.out.printf("\nName: %s.\nLevel: %s (%s/%s).\nClass: %s.\n\nHP: %s/%s.\nAttack: %s.\nDefense: %s.\n\nStat points: %s\nSkill points: %s\n\nGold: %s.\nDefeated monsters: %s.\n\n1 To continue.\n", name, level, expCur, expMax, heroClass.name, hpCur, hpMax, attack, defense, statPoints, skillPoints, gold, enemyCounter);
+        showHeroStats();
         Helper.read();
     }
 
@@ -134,7 +121,7 @@ public class Hero extends Character {
                 goTown();
                 break;
             case "4": //Academy
-                goAcademy();
+//                goAcademy();
                 goTown();
                 break;
             case "5": //Academy
@@ -189,34 +176,34 @@ public class Hero extends Character {
         }
     } //todo:TBD
 
-    private void goAcademy() {
-        Helper.clearScreen();
-        System.out.println("You comes to the academy.\n1 Teacher.\n2 Return to the town.\n");
-        switch (Helper.read()) {
-            case "1":
-                Helper.clearScreen();
-                System.out.printf("You have %s skill and %s stat points.\n\n1 To spend stat points.\n2 To spend skill points\n3 Leave teacher.\n\n", statPoints, skillPoints);
-                switch (Helper.read()) {
-                    case "1":
-                        if (statPoints > 0) spendStatPoints();
-                        System.out.println("\nYou have no stat points. Come back when you grow your level.\n\n1 To resume.");
-                        Helper.read();
-                        goAcademy();
-                    case "2":
-                        if (skillPoints > 0) spendSkillPoints();
-                        Helper.read();
-                        goAcademy();
-                    case "3":
-                        break;
-
-                }
-                break;
-            case "2":
-                goTown();
-            default:
-                goShop();
-        }
-    } //todo:TBD
+//    private void goAcademy() {
+//        Helper.clearScreen();
+//        System.out.println("You comes to the academy.\n1 Teacher.\n2 Return to the town.\n");
+//        switch (Helper.read()) {
+//            case "1":
+//                Helper.clearScreen();
+//                System.out.printf("You have %s skill and %s stat points.\n\n1 To spend stat points.\n2 To spend skill points\n3 Leave teacher.\n\n", statPoints, skillPoints);
+//                switch (Helper.read()) {
+//                    case "1":
+//                        if (statPoints > 0) spendStatPoints();
+//                        System.out.println("\nYou have no stat points. Come back when you grow your level.\n\n1 To resume.");
+//                        Helper.read();
+//                        goAcademy();
+//                    case "2":
+//                        if (skillPoints > 0) spendSkillPoints();
+//                        Helper.read();
+//                        goAcademy();
+//                    case "3":
+//                        break;
+//
+//                }
+//                break;
+//            case "2":
+//                goTown();
+//            default:
+//                goShop();
+//        }
+//    } //todo:TBD
 
     private void goTavern() {
 
@@ -226,50 +213,50 @@ public class Hero extends Character {
 
     } //todo:TBD
 
-    private void spendStatPoints() {
-        System.out.printf("\n%s's stat points: %s\n1 To STR up.\n2 To AGI up.\n3 To VIT up.\n4 To INT up.\n5 Return back.\n", name, statPoints);
-        switch (Helper.read()) {
-            case "1":
-                strength++;
-                statPoints--;
-                System.out.printf("%s's STR: %s\n\n", name, strength);
-                if (statPoints > 0) {
-                    spendStatPoints();
-                }
-                break; //wtf
-            case "2":
-                agility++;
-                statPoints--;
-                System.out.printf("%s's AGI: %s\n\n", name, agility);
-                if (statPoints > 0) {
-                    spendStatPoints();
-                }
-                break;
-            case "3":
-                vitality++;
-                statPoints--;
-                System.out.printf("%s's VIT: %s\n\n", name, vitality);
-                if (statPoints > 0) {
-                    spendStatPoints();
-                }
-                break;
-            case "4":
-                intellect++;
-                statPoints--;
-                System.out.printf("%s's INT: %s\n\n", name, intellect);
-                if (statPoints > 0) {
-                    spendStatPoints();
-                }
-                break;
-            case "5":
-                break;
-            default:
-                spendStatPoints();
-        }
-    } //todo:TBD
-
-    private void spendSkillPoints() { //todo:TBD
-    }
+//    private void spendStatPoints() {
+//        System.out.printf("\n%s's stat points: %s\n1 To STR up.\n2 To AGI up.\n3 To VIT up.\n4 To INT up.\n5 Return back.\n", name, statPoints);
+//        switch (Helper.read()) {
+//            case "1":
+//                strength++;
+//                statPoints--;
+//                System.out.printf("%s's STR: %s\n\n", name, strength);
+//                if (statPoints > 0) {
+//                    spendStatPoints();
+//                }
+//                break; //wtf
+//            case "2":
+//                agility++;
+//                statPoints--;
+//                System.out.printf("%s's AGI: %s\n\n", name, agility);
+//                if (statPoints > 0) {
+//                    spendStatPoints();
+//                }
+//                break;
+//            case "3":
+//                vitality++;
+//                statPoints--;
+//                System.out.printf("%s's VIT: %s\n\n", name, vitality);
+//                if (statPoints > 0) {
+//                    spendStatPoints();
+//                }
+//                break;
+//            case "4":
+//                intellect++;
+//                statPoints--;
+//                System.out.printf("%s's INT: %s\n\n", name, intellect);
+//                if (statPoints > 0) {
+//                    spendStatPoints();
+//                }
+//                break;
+//            case "5":
+//                break;
+//            default:
+//                spendStatPoints();
+//        }
+//    } //todo:TBD
+//
+//    private void spendSkillPoints() { //todo:TBD
+//    }
 
     void lvlUp(Character target) {
         expCur += target.expCur;
@@ -319,31 +306,6 @@ public class Hero extends Character {
         System.out.printf("\nEarned: %s exp, %s gold%s%s%s.\n", target.expCur, getGold, i1, i2, i3); //win info
     } //move > enemy class?
 
-    /*Item logic v2 - to be done*/
-
-//    void addItem() { //for further use
-//        //add item to inventory
-//    }
-
-    void equipItem(EquipableItem item) { //equip item from inventory
-        if (equipped.containsKey(item.itemType)) {
-            unequipItem(item);
-//            System.out.print("\nunequipped: "); //todo:delete after debug
-//            System.out.printf("STR: %s | AGI: %s | VIT: %s | INT: %s.", heroStats.get(StatType.STRENGTH), heroStats.get(StatType.AGILITY), heroStats.get(StatType.VITALITY), heroStats.get(StatType.INTELLECT)); //todo:delete after debug
-        }
-        equipped.put(item.itemType, item); //add equipped item to equipped list
-        inventory.remove(item); //remove equipped item from inventory list
-        item.itemStats.forEach((k, v) -> heroStats.put(k, heroStats.get(k) + v)); //add equipped item stats to hero stats
-//        System.out.print("\nequipped: "); //todo:delete after debug
-//        System.out.printf("STR: %s | AGI: %s | VIT: %s | INT: %s.", heroStats.get(StatType.STRENGTH), heroStats.get(StatType.AGILITY), heroStats.get(StatType.VITALITY), heroStats.get(StatType.INTELLECT)); //todo:delete after debug
-    }
-
-    private void unequipItem(EquipableItem item) { //unequip item to inventory
-        equipped.get(item.itemType).itemStats.forEach((k, v) -> heroStats.put(k, heroStats.get(k) - equipped.get(item.itemType).itemStats.get(k))); //remove unequipped item stats from hero stats
-        inventory.add(equipped.get(item.itemType)); //add unequipped item to inventory list
-        equipped.remove(item.itemType); //remove unequipped item from equipped list
-    }
-
     void useItem(UsableItem item) { //use item from inventory
     }
 
@@ -392,31 +354,76 @@ public class Hero extends Character {
         }
     }
 
-    /*Item logic v2.1 (using Stat class) - to be done
 
-     private void calculateStats() {
-     //        for (Stat stat : heroStats) stat.calc(); //each stat value should be calculated for all equipped items
-     //        foreach (var stat in stats) {
-     //            stat.value.Calc();}
-     }
+    /*Item logic v2.1 (using Stat class)*/
 
-     void equipItem(EquipableItem item) { //equip item from inventory
-     if (equipped.containsKey(item.itemType)) {
-     unequipItem(item);
-     }
-     equipped.put(item.itemType, item); /add equipped item to equipped list
-     inventory.remove(item); //remove equipped item from inventory list
-     //        calculateStats(); //todo:add stats 'hero stats + equipped item stats'
-     //        item.itemStats.forEach((k,v)->System.out.println("Key: " + k + "Value: " + v));
-     //        for (Map.Entry<ItemType, EquipableItem> item1 : equipped.entrySet()) { //heroStats+=itemStats
-     //            item1.getValue().itemStats.forEach((k, v) -> );
-     //        for(Stat stat : item.itemStats) stat.adjust.add(item);
-     //        }
-     }
+        void addItem() { //for further use
+        //add item to inventory
+    }
 
-     private void unequipItem(EquipableItem item) { //unequip item to inventory
-     //todo:remove stats 'hero stats - unequipped item stats'
-     inventory.add(equipped.get(item.itemType)); //add unequipped item to inventory list
-     equipped.remove(item.itemType); //remove unequipped item from equipped list
-     }*/
+    private void calcStats() {
+        for (Stat stat : heroStats) {
+            stat.calc();
+        }
+        strength = heroStats.get(0).modValue; //todo:dynamic reference
+        agility = heroStats.get(1).modValue;
+        vitality = heroStats.get(2).modValue;
+        intellect = heroStats.get(3).modValue;
+    }
+
+    void equipItem(EquipableItem item) { //equip item from inventory
+        if (equipped.containsKey(item.itemType)) {
+            unequipItem(item);
+        }
+        equipped.put(item.itemType, item); //add equipped item to equipped list
+        inventory.remove(item); //remove equipped item from inventory list
+//        method 1 - each heroStats.type compares with each item.itemStats, call Stat.addMod on match
+//        for (Stat stat : heroStats) {
+//            if (item.itemStats.containsKey(stat.type)) {
+//                stat.addMod(item);
+//            }
+//        }
+//        method 2 - each item.itemStats.StatType compares with each heroStats.Stat.type, call Stat.addMod on match
+        for (Map.Entry<StatType, Integer> item1 : item.itemStats.entrySet()) {
+            for (Stat stat : heroStats) {
+                if (stat.type.toString().equals(item1.getKey().toString())) {
+                    stat.addMod(item);
+                }
+            }
+        }
+        calcStats();
+    }
+
+    private void unequipItem(EquipableItem item) { //unequip item to inventory
+        for (Map.Entry<StatType, Integer> item1 : equipped.get(item.itemType).itemStats.entrySet()) {
+            for (Stat stat : heroStats) {
+                if (stat.type.toString().equals(item1.getKey().toString())) {
+                    stat.removeMod(equipped.get(item.itemType));
+                }
+            }
+        }
+        inventory.add(equipped.get(item.itemType)); //add unequipped item to inventory list
+        equipped.remove(item.itemType); //remove unequipped item from equipped list
+    }
+
+    /*Item logic v2 - work's fine (not using Stat class)
+
+    void equipItem(EquipableItem item) { //equip item from inventory
+        if (equipped.containsKey(item.itemType)) {
+            unequipItem(item);
+//            System.out.print("\nunequipped: "); //todo:delete after debug
+//            System.out.printf("STR: %s | AGI: %s | VIT: %s | INT: %s.", heroStats.get(StatType.STRENGTH), heroStats.get(StatType.AGILITY), heroStats.get(StatType.VITALITY), heroStats.get(StatType.INTELLECT)); //todo:delete after debug
+        }
+        equipped.put(item.itemType, item); //add equipped item to equipped list
+        inventory.remove(item); //remove equipped item from inventory list
+        item.itemStats.forEach((k, v) -> heroStats.put(k, heroStats.get(k) + v)); //add equipped item stats to hero stats
+//        System.out.print("\nequipped: "); //todo:delete after debug
+//        System.out.printf("STR: %s | AGI: %s | VIT: %s | INT: %s.", heroStats.get(StatType.STRENGTH), heroStats.get(StatType.AGILITY), heroStats.get(StatType.VITALITY), heroStats.get(StatType.INTELLECT)); //todo:delete after debug
+    }
+
+    private void unequipItem(EquipableItem item) { //unequip item to inventory
+        equipped.get(item.itemType).itemStats.forEach((k, v) -> heroStats.put(k, heroStats.get(k) - equipped.get(item.itemType).itemStats.get(k))); //remove unequipped item stats from hero stats
+        inventory.add(equipped.get(item.itemType)); //add unequipped item to inventory list
+        equipped.remove(item.itemType); //remove unequipped item from equipped list
+    }*/
 }

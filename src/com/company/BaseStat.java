@@ -10,7 +10,7 @@ abstract class BaseStat {
     int baseValue;
     int modValue;
 
-    ArrayList<EquipableItem> adjust = new ArrayList<>(); //keep item link that gives this stat
+    ArrayList<EquipableItem> adjust = new ArrayList<>();
 
     BaseStat(int value) {
         baseValue = value;
@@ -26,7 +26,7 @@ abstract class BaseStat {
 }
 
 class Stat extends BaseStat {
-    private StatType type;
+    StatType type;
 
     Stat(StatType type, int value) {
         super(value);
@@ -35,9 +35,6 @@ class Stat extends BaseStat {
 
     void calc() {
         modValue = baseValue;
-//        for (EquipableItem item : adjust) {
-//        for (EquipableItem item : Hero.getInstance().) {
-//            modValue += item.itemStats.get(this.type);
-//        }
+        for (EquipableItem item : adjust) modValue += item.itemStats.get(this.type);
     }
 }

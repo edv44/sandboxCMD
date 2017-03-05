@@ -60,7 +60,7 @@ public class Main {
                 gameLoop();
 //            case "95": //95 test adding stats on equip/unequip
 //                Hero.getInstance().someMethod();
-//            case "96": //96 i'm so lazy
+//            case "96": //96 test adding stats on equip/unequip
 //                Hero.getInstance().add10Items();
 //                System.out.println("\nAdded 10 items to inventory.");
 //            case "97": //97 for item equip/unequip debug
