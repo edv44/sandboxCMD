@@ -41,13 +41,7 @@ public class Main {
                 gameLoop();
             case "2": //2 Search for the enemy. todo: Move to another location (bring the mechanism).
                 //todo: hero.location > generate monster from this location
-                if (Hero.getInstance().hpCur > 0) {
-                    Hero.getInstance().battle(Enemy.generate());
-                } else {
-                    Helper.clearScreen();
-                    System.out.printf("\n%s [0/%s] need some rest, you can restore HP in the town.\n1 To continue.\n", Hero.getInstance().name, Hero.getInstance().hpMax);
-                    Helper.read();
-                }
+                Hero.getInstance().battle(Enemy.generate());
                 gameLoop();
             case "3": //3 Inventory.
                 Hero.getInstance().getInventoryInfo();

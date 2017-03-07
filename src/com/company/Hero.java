@@ -10,6 +10,8 @@ public class Hero extends Character {
     private int agility;
     private int vitality;
     private int intellect;
+    private int mpMax;
+    private int mpCur;
     int enemyCounter;
     private int statPoints;
     private int skillPoints;
@@ -49,17 +51,15 @@ public class Hero extends Character {
         }
 
         applyClass();
-        add10Items();//todo:delete after test
+//        add10Items(); //todo:delete after test
     }
 
     private void applyClass() {
         initStats();
-        this.hpMax = heroClass.hpMax;
-        this.hpCur = this.hpMax;
-        this.attack = heroClass.attack;
-        this.defense = heroClass.defense;
-        this.statPoints = 0;
-        this.skillPoints = 0;
+        hpCur = hpMax;
+        mpCur = mpMax;
+        statPoints = 10;
+        skillPoints = 0;
     }
 
     private void initStats() {
@@ -69,7 +69,7 @@ public class Hero extends Character {
 
     private void showHeroStats() { //show hero stats
 //        System.out.printf("\nSTR: %s | AGI: %s | VIT: %s | INT: %s.", heroStats.get(StatType.STRENGTH), heroStats.get(StatType.AGILITY), heroStats.get(StatType.VITALITY), heroStats.get(StatType.INTELLECT));
-        System.out.printf("\nSTR: %s | AGI: %s | VIT: %s | INT: %s.", strength, agility, vitality, intellect);
+        System.out.printf("\n[STR: %s | AGI: %s | VIT: %s | INT: %s]\n", strength, agility, vitality, intellect);
     }
 
     @Override
@@ -84,8 +84,9 @@ public class Hero extends Character {
     }
 
     void showFullInfo() {
-        System.out.printf("\nName: %s.\nLevel: %s (%s/%s).\nClass: %s.\n\nHP: %s/%s.\nAttack: %s.\nDefense: %s.\n\nStat points: %s\nSkill points: %s\n\nGold: %s.\nDefeated monsters: %s.\n\n1 To continue.\n", name, level, expCur, expMax, heroClass.name, hpCur, hpMax, attack, defense, statPoints, skillPoints, gold, enemyCounter);
+        System.out.printf("\nName: %s.\nLevel: %s (%s/%s).\nClass: %s.\n\nHP: %s/%s.\nDamage: %s.\nAccuracy: %s.\nDefense: %s.\n\nStat points: %s\nSkill points: %s\n\nGold: %s.\nDefeated monsters: %s.\n", name, level, expCur, expMax, heroClass.name, hpCur, hpMax, damage, accuracy, defense, statPoints, skillPoints, gold, enemyCounter);
         showHeroStats();
+        System.out.println("\n1 To continue.");
         Helper.read();
     }
 
@@ -95,7 +96,6 @@ public class Hero extends Character {
         while (this.hpCur > 0 && enemy.hpCur > 0) {
             Helper.threadSleep(500);
             System.out.printf("\n\nRound %s.\n", round++);
-//            if (hit(enemy) || enemy.hit(this)) break; //return boolean
             hit(enemy);                                    //очень убого выглядит
             if (enemy.hpCur > 0) enemy.hit(this); //это условие проверяется дважды, тут и в цикле
         }
@@ -105,11 +105,11 @@ public class Hero extends Character {
 
     void goTown() {
         Helper.clearScreen();
-        System.out.printf("You have come into the town and now you're standing on the central square.\nWhere do you want to go?\n\n1 Home to have some rest.\n2 Shop.\n3 Blacksmith.\n4 Academy.\n5 Tavern.\n6 Leave the town.\n");
+        System.out.printf("You have come into the town and now you're standing on the central square.\nWhere do you want to go?\n\n1 Church to meditate.\n2 Shop.\n3 Blacksmith.\n4 Academy.\n5 Tavern.\n6 Leave the town.\n");
         String select = Helper.read();
         switch (select) {
-            case "1": //Home (restore HP)
-                goHome();
+            case "1": //Church (restore HP)
+                goChurch();
                 goTown();
                 break;
             case "2": //Shop
@@ -121,7 +121,7 @@ public class Hero extends Character {
                 goTown();
                 break;
             case "4": //Academy
-//                goAcademy();
+                goAcademy();
                 goTown();
                 break;
             case "5": //Academy
@@ -135,13 +135,20 @@ public class Hero extends Character {
         }
     }
 
-    private void goHome() {
+    private void goChurch() {
         Helper.clearScreen();
+        int td = Math.round(hpMax / 20);
         while (hpCur < hpMax) {
             hpCur++;
-            System.out.printf("%s [%s/%s] is resting.", name, hpCur, hpMax);
+            System.out.printf("%s [%s/%s] is meditating near altar.\n", name, hpCur, hpMax);
+            int fill = Math.round(hpCur / td);
+            String[] g = {"[", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "]"};
+            for (int i = 1; i < fill; i++) {
+                g[i] = "x";
+            }
+            for (String s : g) System.out.print(s);
             Helper.threadSleep(100);
-            Helper.clearScreen(); //this method to clear single string in the command line is suck
+            Helper.clearScreen();
         }
     }
 
@@ -176,90 +183,112 @@ public class Hero extends Character {
         }
     } //todo:TBD
 
-//    private void goAcademy() {
-//        Helper.clearScreen();
-//        System.out.println("You comes to the academy.\n1 Teacher.\n2 Return to the town.\n");
-//        switch (Helper.read()) {
-//            case "1":
-//                Helper.clearScreen();
-//                System.out.printf("You have %s skill and %s stat points.\n\n1 To spend stat points.\n2 To spend skill points\n3 Leave teacher.\n\n", statPoints, skillPoints);
-//                switch (Helper.read()) {
-//                    case "1":
-//                        if (statPoints > 0) spendStatPoints();
-//                        System.out.println("\nYou have no stat points. Come back when you grow your level.\n\n1 To resume.");
-//                        Helper.read();
-//                        goAcademy();
-//                    case "2":
-//                        if (skillPoints > 0) spendSkillPoints();
-//                        Helper.read();
-//                        goAcademy();
-//                    case "3":
-//                        break;
-//
-//                }
-//                break;
-//            case "2":
-//                goTown();
-//            default:
-//                goShop();
-//        }
-//    } //todo:TBD
+    private void goAcademy() {
+        Helper.clearScreen();
+        System.out.println("You came to the academy.\n1 Teacher.\n2 Return to the town.\n");
+        switch (Helper.read()) {
+            case "1":
+                Helper.clearScreen();
+                System.out.printf("You have %s stat and %s skill points.\n\n1 To spend stat points.\n2 To spend skill points\n3 Leave teacher.\n\n", statPoints, skillPoints);
+                switch (Helper.read()) {
+                    case "1":
+                        if (statPoints > 0) spendStatPoints();
+                        System.out.println("\nYou have no stat points. Come back when you get the next level.\n\n1 To resume.");
+                        Helper.read();
+                        goAcademy();
+                    case "2":
+                        if (skillPoints > 0) spendSkillPoints();
+                        Helper.read();
+                        goAcademy();
+                    case "3":
+                        break;
+                }
+                break;
+            case "2":
+                goTown();
+                break;
+            default:
+                goAcademy();
+        }
+    } //todo:TBD
 
     private void goTavern() {
-
     } //todo:TBD
 
     private void goBlacksmith() {
-
     } //todo:TBD
 
-//    private void spendStatPoints() {
-//        System.out.printf("\n%s's stat points: %s\n1 To STR up.\n2 To AGI up.\n3 To VIT up.\n4 To INT up.\n5 Return back.\n", name, statPoints);
-//        switch (Helper.read()) {
-//            case "1":
-//                strength++;
-//                statPoints--;
-//                System.out.printf("%s's STR: %s\n\n", name, strength);
-//                if (statPoints > 0) {
-//                    spendStatPoints();
-//                }
-//                break; //wtf
-//            case "2":
-//                agility++;
-//                statPoints--;
-//                System.out.printf("%s's AGI: %s\n\n", name, agility);
-//                if (statPoints > 0) {
-//                    spendStatPoints();
-//                }
-//                break;
-//            case "3":
-//                vitality++;
-//                statPoints--;
-//                System.out.printf("%s's VIT: %s\n\n", name, vitality);
-//                if (statPoints > 0) {
-//                    spendStatPoints();
-//                }
-//                break;
-//            case "4":
-//                intellect++;
-//                statPoints--;
-//                System.out.printf("%s's INT: %s\n\n", name, intellect);
-//                if (statPoints > 0) {
-//                    spendStatPoints();
-//                }
-//                break;
-//            case "5":
-//                break;
-//            default:
-//                spendStatPoints();
-//        }
-//    } //todo:TBD
-//
-//    private void spendSkillPoints() { //todo:TBD
-//    }
+    private void spendStatPoints() {
+        System.out.printf("\n%s's stat points: %s\n1 To STR up.\n2 To AGI up.\n3 To VIT up.\n4 To INT up.\n5 Return back.\n", name, statPoints);
+        switch (Helper.read()) {
+            case "1":
+                for (Stat stat : heroStats) {
+                    if (stat.type == StatType.STRENGTH) {
+                        stat.lvlUpValue++;
+                        calcStats(); //todo:recalculate this stat instead of ALL stats
+                    }
+                }
+                statPoints--;
+                System.out.printf("%s's STR: %s\n\n", name, strength);
+                if (statPoints > 0) {
+                    spendStatPoints();
+                }
+                break; //wtf
+            case "2":
+                for (Stat stat : heroStats) {
+                    if (stat.type == StatType.AGILITY) {
+                        stat.lvlUpValue++;
+                        calcStats();
+                    }
+                }
+                statPoints--;
+                System.out.printf("%s's AGI: %s\n\n", name, agility);
+                if (statPoints > 0) {
+                    spendStatPoints();
+                }
+                break;
+            case "3":
+                for (Stat stat : heroStats) {
+                    if (stat.type == StatType.VITALITY) {
+                        stat.lvlUpValue++;
+                        calcStats();
+                    }
+                }
+                statPoints--;
+                System.out.printf("%s's VIT: %s\n\n", name, vitality);
+                if (statPoints > 0) {
+                    spendStatPoints();
+                }
+                break;
+            case "4":
+                for (Stat stat : heroStats) {
+                    if (stat.type == StatType.INTELLECT) {
+                        stat.lvlUpValue++;
+                        calcStats();
+                    }
+                }
+                statPoints--;
+                System.out.printf("%s's INT: %s\n\n", name, intellect);
+                if (statPoints > 0) {
+                    spendStatPoints();
+                }
+                break;
+            case "5":
+                break;
+            default:
+                spendStatPoints();
+        }
+    } //todo:TBD
 
-    void lvlUp(Character target) {
-        expCur += target.expCur;
+    private void spendSkillPoints() { //todo:TBD
+    }
+
+    void expUp(int value) {
+        expCur += value;
+        lvlUp();
+    }
+
+    private void lvlUp() {
         if (expCur >= expMax) {
             level++;
             expCur -= expMax;
@@ -268,7 +297,7 @@ public class Hero extends Character {
             skillPoints += 1;
             System.out.printf("\nCongratulations! %s reached level %s.\nNow you have free %s skill and %s stat points.\n", name, level, skillPoints, statPoints);
         }
-    } //move > enemy class //todo:make separate class getExp
+    }
 
     void drop(Character target) {
         String i1 = "", i2 = "", i3 = "";
@@ -304,7 +333,7 @@ public class Hero extends Character {
                 break;
         }
         System.out.printf("\nEarned: %s exp, %s gold%s%s%s.\n", target.expCur, getGold, i1, i2, i3); //win info
-    } //move > enemy class?
+    } //move to Enemy class?
 
     void useItem(UsableItem item) { //use item from inventory
     }
@@ -343,7 +372,7 @@ public class Hero extends Character {
                 newItem = new Chest();
                 break;
             default:
-                System.out.println("\n\nERROR: Hero.generateRandomEquipableItem throws some error.\n\n");
+                System.out.println("\n\n!!!generateRandomItem()!!!\n\n");
         }
         return newItem;
     }
@@ -354,21 +383,45 @@ public class Hero extends Character {
         }
     }
 
-
     /*Item logic v2.1 (using Stat class)*/
 
-        void addItem() { //for further use
+    void addItem() { //for further use
         //add item to inventory
     }
 
     private void calcStats() {
         for (Stat stat : heroStats) {
             stat.calc();
+            switch (stat.type) {
+                case STRENGTH:
+                    strength = stat.modValue;
+                    break;
+                case AGILITY:
+                    agility = stat.modValue;
+                    break;
+                case VITALITY:
+                    vitality = stat.modValue;
+                    break;
+                case INTELLECT:
+                    intellect = stat.modValue;
+                    break;
+                case DAMAGE:
+                    damage = stat.modValue;
+                    break;
+                case DEFENSE:
+                    defense = stat.modValue;
+                    break;
+                case ACCURACY:
+                    accuracy = stat.modValue;
+                    break;
+                default:
+                    System.out.println("\n\n!!!calcStats()!!!\n\n");
+            }
         }
-        strength = heroStats.get(0).modValue; //todo:dynamic reference
-        agility = heroStats.get(1).modValue;
-        vitality = heroStats.get(2).modValue;
-        intellect = heroStats.get(3).modValue;
+        damage += strength;
+        accuracy += agility;
+        hpMax = heroClass.baseHP + (vitality * 10);
+        mpMax = intellect * 10;
     }
 
     void equipItem(EquipableItem item) { //equip item from inventory

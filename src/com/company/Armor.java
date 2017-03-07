@@ -1,10 +1,20 @@
 package com.company;
 
 abstract class Armor extends EquipableItem {
-    int defense;
 
     Armor() {
         super();
+        primaryBonuses.add(StatType.STRENGTH); //todo:new object shouldn't have this list in the parameters
+        primaryBonuses.add(StatType.AGILITY);
+        primaryBonuses.add(StatType.VITALITY);
+        primaryBonuses.add(StatType.INTELLECT);
+    }
+
+    String getPrimaryStat(int roll) {
+        StatType s = primaryBonuses.get(Helper.getRandom(0, primaryBonuses.size() - 1));
+        itemStats.put(s, roll);
+        primaryBonuses.remove(s);
+        return String.format(" %s: %s", s.name().toUpperCase().substring(0, 3), roll);
     }
 }
 
@@ -63,18 +73,30 @@ class Chest extends Armor {
                 name = "Ancient Armor";
                 break;
         }
+
         itemType = ItemType.CHEST;
         itemQuality = getItemQuality();
-        amplifier = getAmplifier(itemQuality);
-        double tmpDefense = amplifier * roll * 3; //костыль
-        defense = (int) tmpDefense;
-        cost = defense * 4;
-//        itemStats.put(StatType.DEFENSE, roll);
-        itemStats.put(StatType.STRENGTH, roll + Helper.getRandom(0, 3)); //delete 'random(0, 3)' after debug
-        itemStats.put(StatType.AGILITY, roll + Helper.getRandom(0, 3)); //delete 'random(0, 3)' after debug
-//        itemStats.add(new Stat(StatType.STRENGTH, roll));
-//        itemStats.add(new Stat(StatType.AGILITY, roll));
-//        name = "[" + itemQuality.toString() + "] " + name;
-        name = "[" + itemQuality.toString() + "] " + name + " S:" + itemStats.get(StatType.STRENGTH) + " A:" + itemStats.get(StatType.AGILITY);
+        itemStats.put(StatType.DEFENSE, roll);
+        name = String.format("[%s] %s", itemQuality, name);
+
+        switch (itemQuality) {
+            case NORMAL:
+                cost = roll * 30;
+                break;
+            case MAGIC:
+                name = name + getPrimaryStat(roll);
+                cost = roll * 60;
+                break;
+            case RARE:
+                name = name + getPrimaryStat(roll) + getPrimaryStat(roll);
+                cost = roll * 90;
+                break;
+            case EPIC:
+                name = name + getPrimaryStat(roll) + getPrimaryStat(roll) + getPrimaryStat(roll);
+                cost = roll * 120;
+                break;
+            default:
+                System.out.println("\n\n!!!Chest()!!!\n\n");
+        }
     }
 }

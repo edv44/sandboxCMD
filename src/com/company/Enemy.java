@@ -12,12 +12,13 @@ class Enemy extends Character {
     }
 
     private void calcStats() {
-        attack = Helper.getRandom(8, 14) * level;
-        defense = level;
+        damage = level * Helper.getRandom(10, 13);
+        accuracy = level * Helper.getRandom(7, 10);
+        defense = level * Helper.getRandom(3, 5);
         hpMax = Helper.getRandom(31, 45) * level;
         hpCur = hpMax;
-        expCur = defense + Math.round(attack + hpMax) / 2;
-        gold = (int) ((defense + Math.round(attack + hpMax) / 2) * 1.15);
+        expCur = accuracy + defense + Math.round(damage + hpMax) / 2;
+        gold = (int) ((defense + Math.round(damage + hpMax) / 2) * 1.15);
     }
 
     @Override
@@ -25,7 +26,7 @@ class Enemy extends Character {
         System.out.printf("\n\n%s defeated %s!", Hero.getInstance().name, name);
         Hero.getInstance().enemyCounter++;
         Hero.getInstance().drop(this);
-        Hero.getInstance().lvlUp(this);
+        Hero.getInstance().expUp(this.expCur);
     }
 
 //    @Override

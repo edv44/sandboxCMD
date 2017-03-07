@@ -37,15 +37,15 @@ class Item {
 //        return t;
 //    }
 
-    static double getAmplifier(ItemQuality whichQuality) {
-        if (whichQuality == ItemQuality.NORMAL) {
-            return 1;
-        } else if (whichQuality == ItemQuality.MAGIC) {
-            return 1.3;
-        } else if (whichQuality == ItemQuality.RARE) {
-            return 1.7;
-        } else return 2.3;
-    }
+//    static double getAmplifier(ItemQuality whichQuality) {
+//        if (whichQuality == ItemQuality.NORMAL) {
+//            return 1;
+//        } else if (whichQuality == ItemQuality.MAGIC) {
+//            return 1.3;
+//        } else if (whichQuality == ItemQuality.RARE) {
+//            return 1.7;
+//        } else return 2.3;
+//    }
 }
 
 
@@ -62,8 +62,8 @@ abstract class UsableItem extends Item {
 abstract class EquipableItem extends UsableItem {
     ItemType itemType;
     ItemQuality itemQuality;
-    double amplifier;
     Map<StatType, Integer> itemStats = new HashMap<>();
+    ArrayList<StatType> primaryBonuses = new ArrayList<>();
 
     EquipableItem() {
         super();

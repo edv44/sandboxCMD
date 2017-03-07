@@ -11,7 +11,7 @@ class Helper {
         return (in.next());
     }
 
-    static void clearScreen() {
+    static void clearScreen() { //this method to clear single string in the command line is suck
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     }
 

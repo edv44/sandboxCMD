@@ -1,11 +1,21 @@
 package com.company;
 
 abstract class Weapon extends EquipableItem {
-    int damage;
 
     Weapon() {
         super();
         itemType = ItemType.WEAPON;
+        primaryBonuses.add(StatType.STRENGTH); //todo:new object shouldn't have this list in the parameters
+        primaryBonuses.add(StatType.AGILITY);
+        primaryBonuses.add(StatType.VITALITY);
+        primaryBonuses.add(StatType.INTELLECT);
+    }
+
+    String getPrimaryStat(int roll) {
+        StatType s = primaryBonuses.get(Helper.getRandom(0, primaryBonuses.size() - 1));
+        itemStats.put(s, roll);
+        primaryBonuses.remove(s);
+        return String.format(" %s: %s", s.name().toUpperCase().substring(0, 3), roll);
     }
 }
 
@@ -14,7 +24,7 @@ class Sword extends Weapon {
     Sword() {
         super();
 
-        int roll = Helper.getRandom(1, Hero.getInstance().level);//todo: roll 1..(enemy.lvl - hero.lvl)
+        int roll = Helper.getRandom(1, Hero.getInstance().level); //todo: roll 1..(enemy.lvl - hero.lvl)
 
         switch (roll) {
             case 1:
@@ -50,18 +60,29 @@ class Sword extends Weapon {
                 name = "War Sword";
                 break;
         }
+
         itemQuality = getItemQuality();
-        amplifier = getAmplifier(itemQuality);
-        double tmpDamage = amplifier * roll * 3; //костыль
-        damage = (int) tmpDamage; //костыль
-        cost = damage * 4; //костыль
-//        itemStats.put(StatType.ATTACK, roll);
-        itemStats.put(StatType.STRENGTH, roll);
-        itemStats.put(StatType.AGILITY, roll);
-//        itemStats.add(new Stat(StatType.STRENGTH, roll));
-//        itemStats.add(new Stat(StatType.AGILITY, roll));
-//        name = "[" + itemQuality.toString() + "] " + name; //original
-//        name = "[" + itemQuality.toString() + "] " + name + " S:" + itemStats.get(0).baseValue + " A:" + itemStats.get(1).baseValue;
-        name = "[" + itemQuality.toString() + "] " + name + " S:" + itemStats.get(StatType.STRENGTH) + " A:" + itemStats.get(StatType.AGILITY);
+        itemStats.put(StatType.DAMAGE, roll);
+        name = String.format("[%s] %s", itemQuality, name);
+
+        switch (itemQuality) {
+            case NORMAL:
+                cost = roll * 30;
+                break;
+            case MAGIC:
+                name = name + getPrimaryStat(roll);
+                cost = roll * 60;
+                break;
+            case RARE:
+                name = name + getPrimaryStat(roll) + getPrimaryStat(roll);
+                cost = roll * 90;
+                break;
+            case EPIC:
+                name = name + getPrimaryStat(roll) + getPrimaryStat(roll) + getPrimaryStat(roll);
+                cost = roll * 120;
+                break;
+            default:
+                System.out.println("\n\n!!!Sword()!!!\n\n");
+        }
     }
 }

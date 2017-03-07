@@ -3,11 +3,12 @@ package com.company;
 import java.util.ArrayList;
 
 enum StatType {
-    STRENGTH, AGILITY, VITALITY, INTELLECT, ATTACK, DEFENSE, HP
+    STRENGTH, AGILITY, VITALITY, INTELLECT, DAMAGE, DEFENSE, ACCURACY
 }
 
 abstract class BaseStat {
     int baseValue;
+    int lvlUpValue;
     int modValue;
 
     ArrayList<EquipableItem> adjust = new ArrayList<>();
@@ -34,7 +35,7 @@ class Stat extends BaseStat {
     }
 
     void calc() {
-        modValue = baseValue;
+        modValue = baseValue + lvlUpValue;
         for (EquipableItem item : adjust) modValue += item.itemStats.get(this.type);
     }
 }
